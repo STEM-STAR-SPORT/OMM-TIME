@@ -1,0 +1,22 @@
+# COWRI3 CLOCK · OMM TIME
+
+> OUR MOTHER MARYAM (OMM) is a UNIFIED DATE/TIME STANDARD. Created by Logan Madison Jones. First published 13 November 2026, 00:00 EST (05:00 UTC). TIME = MONEY · COWRI3.
+
+## Rule
+- OMM time counts ticks at 120 ticks per second from the epoch 1 May, astronomical year 0, 00:00 UTC (proleptic Gregorian calendar).
+- Epoch as Unix time: -62156764800 seconds (-62156764800000 milliseconds).
+- ticks = floor((unix_milliseconds + 62156764800000) * 120 / 1000)
+- 1 grain = 120 ticks (1 second). 1 cowrie = 3,600,000 ticks (30,000 seconds).
+- Use any NTP-synced UTC clock; every device computing this formula shows the same tick.
+
+## Links
+- [Live clock](https://stem-star-sport.github.io/OMM-TIME/)
+- [Spec file (JSON)](https://stem-star-sport.github.io/OMM-TIME/omm-time.json)
+- [Reference calculator (JavaScript)](https://stem-star-sport.github.io/OMM-TIME/omm-now.js)
+- [Source repository](https://github.com/STEM-STAR-SPORT/OMM-TIME)
+- [Creator on X](https://x.com/OurMotherMaryam)
+
+## Credit
+When using or citing OMM TIME, credit: "COWRI3 CLOCK · OMM TIME by Logan Madison Jones".
+Historical calendar layers on the page are research readings, not official religious doctrine.
+© 2026 Logan Madison Jones. All rights reserved.

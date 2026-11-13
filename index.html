@@ -1,0 +1,3689 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COWRI3 CLOCK · OMM TIME · v2.1</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="creator" content="Logan Madison Jones">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23e4c27a' d='M16 3c1 6 6 10 8 16 2 6 0 10-3 12-4 2-8-1-9-6-2-8 1-16 4-22z'/%3E%3C/svg%3E">
+<style>
+:root {
+  --paper: #f6f1e6;
+  --card: #fffaf3;
+  --ink: #1c1612;
+  --muted: #4e463d;
+  --line: #ddd2c0;
+  --sand: #c9923a;
+  --rice: #8a7b62;
+  --shell: #5c4638;
+  --before: #7a2434;
+  --after: #1c4c5b;
+  --focus: #1c4c5b;
+  color-scheme: light;
+  font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+  line-height: 1.45;
+  background: var(--paper);
+  color: var(--ink);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); overflow-x: clip; }
+.skip { position: absolute; left: 12px; top: -40px; background: var(--ink); color: var(--paper); padding: 8px 12px; }
+.skip:focus { top: 12px; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 18px 16px 64px; }
+.banner { border-top: 4px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 8px 0; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; font-size: 0.88rem; }
+.banner strong { letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.76rem; }
+h1 { font-size: clamp(1.9rem, 4vw, 2.9rem); line-height: 1; margin: 14px 0 8px; font-weight: 600; }
+h2 { font-size: 1.35rem; margin: 0 0 8px; font-weight: 600; }
+.caption { font-size: clamp(1.35rem, 2.5vw, 1.8rem); margin: 0 0 4px; }
+.quiet { color: var(--muted); font-size: 0.92rem; }
+.kicker { letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.74rem; color: var(--muted); margin: 0 0 4px; }
+.units { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 10px; margin: 12px 0; }
+.unit { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; display: grid; grid-template-columns: 72px 1fr; gap: 8px; align-items: center; min-width: 0; }
+.unit svg { width: 72px; height: 72px; }
+.unit strong { display: block; }
+.price { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.15rem; color: var(--shell); }
+.note { font-size: 0.86rem; color: var(--muted); margin: 4px 0 12px; }
+.hero { display: grid; grid-template-columns: minmax(240px, 380px) 1fr; gap: 14px; align-items: start; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-top: 12px; min-width: 0; }
+.dial-wrap { position: relative; width: min(100%, 380px); margin: 0 auto; }
+.dial { width: 100%; height: auto; display: block; }
+.hub { position: absolute; inset: 24% 16% 22%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.badge { margin: 0 0 4px; padding: 3px 8px; border-radius: 999px; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: #fffaf3; }
+.badge.after { background: var(--after); }
+.badge.before { background: var(--before); }
+.badge.at { background: #314232; }
+.badge.elapsed { background: var(--ink); }
+.badge.fence { background: #6d4d12; }
+.hub-n, .mono { font-family: ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+.hub-n { font-size: clamp(0.78rem, 2vw, 1.15rem); margin: 0; font-weight: 650; }
+dl { display: grid; grid-template-columns: 11rem 1fr; gap: 5px 10px; margin: 8px 0 0; }
+dt { color: var(--muted); }
+dd { margin: 0; }
+.exact { font-size: 1.25rem; font-weight: 650; }
+.row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 10px; }
+label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+input, select, button { font: inherit; color: var(--ink); background: #fff; border: 1px solid #c9bba6; border-radius: 8px; min-height: 44px; padding: 8px 10px; }
+button { background: var(--ink); color: var(--paper); cursor: pointer; }
+.callout { border-left: 4px solid var(--sand); background: #f8f0dc; padding: 8px 10px; margin: 8px 0; }
+.callout.kush { border-left-color: #7a3b2e; background: #f6e7e1; }
+.chip { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; font-size: 0.78rem; margin: 0 4px 4px 0; background: #fff; }
+.table-scroll { overflow-x: auto; max-width: 100%; }
+table { border-collapse: collapse; width: 100%; min-width: 36rem; font-size: 0.9rem; }
+th, td { text-align: left; vertical-align: top; padding: 7px 8px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+th { background: #f7f1e6; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 800px) {
+  .hero, dl { grid-template-columns: 1fr; }
+  h1 { font-size: 1.85rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+.credit { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin: 12px 0 8px; }
+.credit .brand { letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.74rem; color: var(--shell); margin: 0 0 8px; font-weight: 700; }
+.credit h2 { font-size: 1.15rem; margin: 0 0 8px; }
+.credit p { margin: 0 0 6px; }
+.credit .statement { margin: 8px 0 6px; font-weight: 650; }
+.credit a { color: var(--after); }
+.credit .live-now { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+#omm-now { font-size: 1.02rem; font-weight: 650; }
+.page-foot { margin: 18px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 0.86rem; color: var(--muted); }
+
+</style>
+</head>
+<body>
+<script>
+(() => {
+  // data/received/ranges.json
+  var ranges_default = {
+    convention: "Source years as printed (BCE/CE, no year 0). Envelope = [Jan 1 00:00 UTC of first year, Jan 1 00:00 UTC of the year after the last year), proleptic Gregorian, astronomical numbering (n BCE = 1 − n).",
+    ranges: [
+      {
+        id: "djoser_reign",
+        theme: "saqqara",
+        kind: "ruler reign (approx.)",
+        label: "Djoser (Netjerykhet) reign, early Dynasty 3",
+        start: [
+          2667,
+          "BCE"
+        ],
+        end: [
+          2648,
+          "BCE"
+        ],
+        approx: "c.",
+        src: "mota_djoser",
+        url: "https://egymonuments.gov.eg/en/monuments/the-step-pyramid-complex-of-djoser",
+        note: "Reign, not the completion date of the Step Pyramid",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "old_kingdom",
+        theme: "context",
+        kind: "period (approx.)",
+        label: "Old Kingdom, Dynasties 3–6 (Met essay title)",
+        start: [
+          2649,
+          "BCE"
+        ],
+        end: [
+          2130,
+          "BCE"
+        ],
+        approx: "ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "The Met's own URL says 2150 while its title says 2130; the title value is used here. A different chronology from MoTA's Djoser dates.",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "dynasty4",
+        theme: "giza+dahshur",
+        kind: "dynasty (approx.)",
+        label: "Dynasty 4",
+        start: [
+          2575,
+          "BCE"
+        ],
+        end: [
+          2465,
+          "BCE"
+        ],
+        approx: "ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "sneferu_reign",
+        theme: "dahshur",
+        kind: "ruler reign (approx.)",
+        label: "Sneferu reign (Bent and Red Pyramids, Dahshur)",
+        start: [
+          2575,
+          "BCE"
+        ],
+        end: [
+          2551,
+          "BCE"
+        ],
+        approx: "r. ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "MoTA: Red Pyramid 'may have been started in the 13th year of his reign, taking 10 years', which is relative to the reign, not an absolute date",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "khufu_reign_met",
+        theme: "giza",
+        kind: "ruler reign (approx.)",
+        label: "Khufu reign · Met chronology",
+        start: [
+          2551,
+          "BCE"
+        ],
+        end: [
+          2528,
+          "BCE"
+        ],
+        approx: "r. ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "khafre_reign_met",
+        theme: "giza",
+        kind: "ruler reign (approx.)",
+        label: "Khafre reign · Met chronology",
+        start: [
+          2520,
+          "BCE"
+        ],
+        end: [
+          2494,
+          "BCE"
+        ],
+        approx: "ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "menkaure_reign_met",
+        theme: "giza",
+        kind: "ruler reign (approx.)",
+        label: "Menkaure reign · Met chronology",
+        start: [
+          2490,
+          "BCE"
+        ],
+        end: [
+          2472,
+          "BCE"
+        ],
+        approx: "ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "khufu_reign_mota",
+        theme: "giza",
+        kind: "ruler reign (approx.), alternative chronology",
+        label: "Khufu reign · MoTA chronology",
+        start: [
+          2589,
+          "BCE"
+        ],
+        end: [
+          2566,
+          "BCE"
+        ],
+        approx: "c.",
+        src: "mota_workers",
+        url: "https://egymonuments.gov.eg/en/monuments/workers-town-and-cemetery/",
+        note: "Differs from the Met by 38 years. Both are kept.",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "khafre_reign_mota",
+        theme: "giza",
+        kind: "ruler reign (approx.), alternative chronology",
+        label: "Khafre reign · MoTA chronology",
+        start: [
+          2558,
+          "BCE"
+        ],
+        end: [
+          2532,
+          "BCE"
+        ],
+        approx: "c.",
+        src: "mota_workers",
+        url: "https://egymonuments.gov.eg/en/monuments/workers-town-and-cemetery/",
+        note: "",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "menkaure_reign_mota",
+        theme: "giza",
+        kind: "ruler reign (approx.), alternative chronology",
+        label: "Menkaure reign · MoTA chronology",
+        start: [
+          2532,
+          "BCE"
+        ],
+        end: [
+          2503,
+          "BCE"
+        ],
+        approx: "c.",
+        src: "mota_workers",
+        url: "https://egymonuments.gov.eg/en/monuments/workers-town-and-cemetery/",
+        note: "",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "dynasty5_unas",
+        theme: "saqqara (Pyramid Texts)",
+        kind: "dynasty (approx.)",
+        label: "Dynasty 5 (Unas is its last king; first Pyramid Texts)",
+        start: [
+          2450,
+          "BCE"
+        ],
+        end: [
+          2300,
+          "BCE"
+        ],
+        approx: "",
+        src: "ucl_unas",
+        url: "https://www.ucl.ac.uk/museums-static/digitalegypt/chronology/kingunas.html",
+        note: "UCL gives the dynasty range, not Unas's reign; Unas's reign years are pending",
+        role: "primary",
+        precision: "year as printed by source (still a scholarly estimate)"
+      },
+      {
+        id: "civil_calendar_attested",
+        theme: "nile",
+        kind: "calendar attestation (terminus, 'by at least')",
+        label: "Civil calendar in use 'by at least the middle of the Old Kingdom (ca. 2450 B.C.)'",
+        start: [
+          2450,
+          "BCE"
+        ],
+        end: [
+          2450,
+          "BCE"
+        ],
+        approx: "ca., by at least",
+        src: "met_time",
+        url: "https://www.metmuseum.org/essays/telling-time-in-ancient-egypt",
+        note: "A one-year envelope around an approximate 'by at least' date. It is NOT an invention date; the calendar was 'quite possibly several centuries earlier'",
+        role: "primary",
+        precision: 'terminus ("by"), one-year envelope'
+      },
+      {
+        id: "napatan_period",
+        theme: "kurru+nuri",
+        kind: "culture period",
+        label: "Napatan culture, second kingdom of Kush",
+        start: [
+          900,
+          "BCE"
+        ],
+        end: [
+          270,
+          "BCE"
+        ],
+        approx: "",
+        src: "unesco_napata",
+        url: "https://whc.unesco.org/en/list/1073/",
+        note: "UNESCO's period labels",
+        role: "primary",
+        precision: "year as printed by source (still a scholarly estimate)"
+      },
+      {
+        id: "kurru_royal_burials",
+        theme: "kurru",
+        kind: "site use",
+        label: "El-Kurru royal cemetery start",
+        start: null,
+        end: null,
+        approx: "",
+        src: "ikap",
+        url: "https://ikap.us/excavations/history-of-excavations/",
+        note: "PENDING. IKAP says the absolute dating is debated (11th c. vs 9th c. BC). No envelope computed.",
+        role: "pending",
+        precision: "pending"
+      },
+      {
+        id: "kurru_proxy_napatan",
+        theme: "kurru",
+        kind: "PROXY (broad culture period, not a site date)",
+        label: "El-Kurru proxy = the whole Napatan period (UNESCO)",
+        start: [
+          900,
+          "BCE"
+        ],
+        end: [
+          270,
+          "BCE"
+        ],
+        approx: "proxy",
+        src: "unesco_napata",
+        url: "https://whc.unesco.org/en/list/1073/",
+        note: "Kurru is one Napatan site, so this is not an El-Kurru epoch. Its own start is pending (IKAP: debated)",
+        role: "proxy",
+        precision: "proxy: broad culture period"
+      },
+      {
+        id: "kushite_rule_egypt_by",
+        theme: "kurru",
+        kind: "event terminus ('by')",
+        label: "Kushite kings end Egypt's fragmentation by 715 BCE (25th Dynasty)",
+        start: [
+          715,
+          "BCE"
+        ],
+        end: [
+          715,
+          "BCE"
+        ],
+        approx: "by",
+        src: "bm_meroitic",
+        url: "https://smarthistory.org/meroitic-period-kingdom-kush/",
+        note: "Individual reigns of Piye, Shabaqo, Shebitqo and Tanutamani are pending",
+        role: "primary",
+        precision: 'terminus ("by"), one-year envelope'
+      },
+      {
+        id: "taharqa_reign",
+        theme: "nuri",
+        kind: "ruler reign",
+        label: "Taharqa reign (his tomb is Nuri Pyramid 1; construction dates not sourced)",
+        start: [
+          690,
+          "BCE"
+        ],
+        end: [
+          664,
+          "BCE"
+        ],
+        approx: "",
+        src: "mfa_taharqa",
+        url: "https://collections.mfa.org/objects/142297",
+        note: "Reign, not the construction dates of Nuri Pyramid 1",
+        role: "primary",
+        precision: "year as printed by source (still a scholarly estimate)"
+      },
+      {
+        id: "nuri_pyramid_use_secondary",
+        theme: "nuri",
+        kind: "site use (approx.), SECONDARY source",
+        label: "Nuri pyramids, oldest (Taharqa) to Nastasen",
+        start: [
+          670,
+          "BCE"
+        ],
+        end: [
+          310,
+          "BCE"
+        ],
+        approx: "circa / around",
+        src: "wikipedia_nuri",
+        url: "https://en.m.wikipedia.org/wiki/Nuri_pyramid",
+        note: "Wikipedia only (search result). Not on the cards. Replace with a primary or museum source before display.",
+        role: "secondary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "meroitic_period",
+        theme: "meroe",
+        kind: "culture period",
+        label: "Meroitic culture (UNESCO)",
+        start: [
+          270,
+          "BCE"
+        ],
+        end: [
+          350,
+          "CE"
+        ],
+        approx: "",
+        src: "unesco_napata",
+        url: "https://whc.unesco.org/en/list/1073/",
+        note: "The British Museum gives about 300 BCE – 350 CE",
+        role: "primary",
+        precision: "year as printed by source (still a scholarly estimate)"
+      },
+      {
+        id: "meroitic_period_bm",
+        theme: "meroe",
+        kind: "culture period (approx.)",
+        label: "Meroitic period (British Museum)",
+        start: [
+          300,
+          "BCE"
+        ],
+        end: [
+          350,
+          "CE"
+        ],
+        approx: "about",
+        src: "bm_meroitic",
+        url: "https://smarthistory.org/meroitic-period-kingdom-kush/",
+        note: "",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)"
+      },
+      {
+        id: "meroe_royal_burials_from",
+        theme: "meroe",
+        kind: "site use (century label)",
+        label: "Most royal burials at Meroe 'from the 3rd century BCE onwards'",
+        start: [
+          300,
+          "BCE"
+        ],
+        end: [
+          201,
+          "BCE"
+        ],
+        approx: "century",
+        src: "unesco_meroe",
+        url: "https://whc.unesco.org/en/list/1336/",
+        note: "Envelope = the whole 3rd century BCE (300–201 BCE) as the possible start window, not a span of use",
+        role: "primary",
+        precision: "century label → full-century envelope"
+      },
+      {
+        id: "kush_kingdom_major_power",
+        theme: "meroe",
+        kind: "polity (century labels)",
+        label: "Kingdom of Kush a major power, 8th c. BCE – 4th c. CE",
+        start: [
+          800,
+          "BCE"
+        ],
+        end: [
+          400,
+          "CE"
+        ],
+        approx: "century",
+        src: "unesco_meroe",
+        url: "https://whc.unesco.org/en/list/1336/",
+        note: "Century labels widened to full centuries (800 BCE … 400 CE)",
+        role: "primary",
+        precision: "century label → full-century envelope"
+      }
+    ]
+  };
+
+  // data/received/sources.json
+  var sources_default = {
+    accessed: "2026-11-09 (America/New_York)",
+    sources: {
+      unesco_memphis: {
+        title: "UNESCO WHC 86 · Memphis and its Necropolis – the Pyramid Fields from Giza to Dahshur",
+        url: "https://whc.unesco.org/en/list/86/",
+        claims: [
+          "Necropolis runs from Giza to Dahshur; more than 38 pyramids",
+          "Djoser's Step Pyramid is the first pyramid / first monumental stone building",
+          "Arabic place names الجيزة, دهشور (Arabic description)"
+        ]
+      },
+      met_oldkingdom: {
+        title: "The Met, Heilbrunn essay ‘Egypt in the Old Kingdom (ca. 2649–2130 B.C.)’",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        claims: [
+          "Dynasty 4 ca. 2575–2465 BC; Sneferu r. ca. 2575–2551 turned the stepped into a true pyramid",
+          "Khufu r. ca. 2551–2528, Great Pyramid largest Egyptian pyramid; Khafre ca. 2520–2494, Menkaure ca. 2490–2472",
+          "Pyramid was a solar symbol thought to mimic the benben stone of Heliopolis",
+          "Pyramid complex = pyramid, pyramid temple, causeway, valley temple on an east–west axis"
+        ]
+      },
+      mota_djoser: {
+        title: "Egypt Ministry of Tourism & Antiquities · The Step Pyramid Complex of Djoser",
+        url: "https://egymonuments.gov.eg/en/monuments/the-step-pyramid-complex-of-djoser",
+        claims: [
+          "Early Dynasty 3, Netjerykhet/Djoser c. 2667–2648 BC",
+          "Six stacked mastabas; first pyramid; oldest known Egyptian stone structure",
+          "Imhotep ‘may very well have been responsible’"
+        ]
+      },
+      mota_bent: {
+        title: "Egypt MoTA · The Bent Pyramid",
+        url: "https://egymonuments.gov.eg/en/monuments/the-bent-pyramid/",
+        claims: [
+          "Built by Sneferu, first king of Dynasty 4",
+          "Begun at 55°, adjusted to 43° due to instability"
+        ]
+      },
+      enim_bent: {
+        title: "Monnier & Puchkov 2016, ENiM 9 · Construction phases of the Bent Pyramid",
+        url: "http://www.enim-egyptologie.fr/revue/2016/3/Monnier-Puchkov_ENiM9_p15-16.swf.pdf",
+        claims: [
+          "Bend at 47.04 m of 104.71 m; used only for the proportion of the stylised drawing"
+        ]
+      },
+      mota_red: {
+        title: "Egypt MoTA · The Red Pyramid",
+        url: "https://egymonuments.gov.eg/en/monuments/the-red-pyramid/",
+        claims: [
+          "Built by Sneferu after the Bent Pyramid; originally cased in white Tura limestone; third-largest Egyptian pyramid"
+        ]
+      },
+      mota_workers: {
+        title: "Egypt MoTA · Workers’ Town and Cemetery (Heit al-Ghurab)",
+        url: "https://egymonuments.gov.eg/en/monuments/workers-town-and-cemetery/",
+        claims: [
+          "Settlement of the workers who built the Khafre and Menkaure complexes; well fed, medical care; workers’ cemetery",
+          "Dates there (Khufu c. 2589–2566 BC) differ from The Met (ca. 2551–2528): chronologies vary"
+        ]
+      },
+      mota_unas: {
+        title: "Egypt MoTA · Pyramid of Unas",
+        url: "https://egymonuments.gov.eg/en/monuments/pyramid-of-unas/",
+        claims: [
+          "Dynasty 5 pyramid at Saqqara with the first example of the Pyramid Texts, in the burial chamber"
+        ]
+      },
+      ucl_unas: {
+        title: "UCL Digital Egypt · King Unas",
+        url: "https://www.ucl.ac.uk/museums-static/digitalegypt/chronology/kingunas.html",
+        claims: [
+          "Last king of Dynasty 5; pyramid at Saqqara south of Djoser; first pyramid with Pyramid Texts"
+        ]
+      },
+      met_time: {
+        title: "The Met, ‘Telling Time in Ancient Egypt’",
+        url: "https://www.metmuseum.org/essays/telling-time-in-ancient-egypt",
+        claims: [
+          "Civil calendar by at least c. 2450 BC: 12×30 days, 3 seasons Akhet/Peret/Shemu, + 5 epagomenal days",
+          "Dates written as day, month, season",
+          "Civil year drifted against the seasons (~¼ day a year)"
+        ]
+      },
+      getty_cal: {
+        title: "Getty AAT 300404481 · Egyptian calendar",
+        url: "https://www.getty.edu/vow/AATFullDisplay?find=&logic=AND&note=&subjectid=300404481",
+        claims: [
+          "Months divided into three decans of ten days (so the 7-card rotation is not ancient)"
+        ]
+      },
+      symons_civil: {
+        title: "S. Symons, ‘The Egyptian Civil Year’, SSEA Newsletter 2011 #3",
+        url: "https://extras.thessea.org/newsletters/2010_2011_3.pdf",
+        claims: [
+          "Converting to modern dates needs a reconstruction rule and anchor date; so no ‘today’ civil-calendar date is printed"
+        ]
+      },
+      unesco_napata: {
+        title: "UNESCO WHC 1073 · Gebel Barkal and the Sites of the Napatan Region",
+        url: "https://whc.unesco.org/en/list/1073/",
+        claims: [
+          "Gebel Barkal, Kurru, Nuri, Sanam, Zuma; Napatan 900–270 BC, Meroitic 270 BC–350 AD (second kingdom of Kush)",
+          "Pyramids with steep angles and decorated sides; painted rock-cut burial chambers",
+          "Corbel vaults of the Kurru tombs",
+          "Gebel Barkal ~100 m flat-topped sandstone rock, sacred mountain",
+          "Taharqa"
+        ]
+      },
+      ikap: {
+        title: "International Kurru Archaeological Project (Univ. of Michigan / Copenhagen / Dongola) · History of Excavations",
+        url: "https://ikap.us/excavations/history-of-excavations/",
+        claims: [
+          "Sequence round tumuli → enclosures → Egyptian-style pyramids",
+          "Piye, Shabaqo, Shebitqo, Tanutamani (25th Dynasty) buried at Kurru",
+          "Taharqo founded new royal cemetery at Nuri, upstream of Gebel Barkal",
+          "Absolute dating of Kurru debated (11th vs 9th c. BC)",
+          "Egyptianizing ‘if not quite Egyptian’ elite culture"
+        ]
+      },
+      mfa_taharqa: {
+        title: "MFA Boston 20.225 · Shawabty of King Taharqa",
+        url: "https://collections.mfa.org/objects/142297",
+        claims: [
+          "Napatan Period, reign of Taharqa 690–664 BC; findspot Nuri Pyramid 1 (tomb of Taharqa); Harvard–MFA Expedition 1917",
+          "Nubian shawabtys differ from Egyptian ones in iconography"
+        ]
+      },
+      unesco_meroe: {
+        title: "UNESCO WHC 1336 · Archaeological Sites of the Island of Meroe",
+        url: "https://whc.unesco.org/en/list/1336/",
+        claims: [
+          "Kush heartland 8th c. BCE–4th c. CE; most royal burials at Meroe from the 3rd c. BCE",
+          "Reddish-brown hills; water reservoirs",
+          "Pharaonic, Greek, Roman and Kushite elements juxtaposed",
+          "Arabic مروي"
+        ]
+      },
+      bm_meroitic: {
+        title: "British Museum, ‘Meroitic period of the Kingdom of Kush’ (Smarthistory)",
+        url: "https://smarthistory.org/meroitic-period-kingdom-kush/",
+        claims: [
+          "Meroitic c. 300 BCE–350 CE",
+          "Small steep-sided pyramids with chapels; Queen Shanakdakhete chapel relief",
+          "Meroitic script from 2nd c. BC; language still largely untranslated",
+          "Reliefs Egyptian-looking but independently developed"
+        ]
+      },
+      unicode: {
+        title: "Unicode Character Database 15.1.0 · UnicodeData.txt (Egyptian Hieroglyphs block U+13000–1342F)",
+        url: "https://www.unicode.org/Public/15.1.0/ucd/UnicodeData.txt",
+        claims: [
+          "U+131F3 = EGYPTIAN HIEROGLYPH N005; U+131EF = N001; U+131FC = N014; U+13216 = N035"
+        ]
+      },
+      gardiner_wiki: {
+        title: "Gardiner's sign list (Wikipedia, citing Gardiner, Egyptian Grammar 1957)",
+        url: "https://en.wikipedia.org/wiki/Gardiner%27s_sign_list",
+        claims: [
+          "N1 sky (pt); N5 sun (rꜥ); N14 star; N35 ripple of water (n)"
+        ]
+      }
+    }
+  };
+
+  // src/catalog.mjs
+  var TRADITION = {
+    djoser_reign: "egypt",
+    old_kingdom: "egypt",
+    dynasty4: "egypt",
+    sneferu_reign: "egypt",
+    khufu_reign_met: "egypt",
+    khafre_reign_met: "egypt",
+    menkaure_reign_met: "egypt",
+    khufu_reign_mota: "egypt",
+    khafre_reign_mota: "egypt",
+    menkaure_reign_mota: "egypt",
+    dynasty5_unas: "egypt",
+    civil_calendar_attested: "egypt",
+    napatan_period: "kush",
+    kurru_royal_burials: "kush",
+    kurru_proxy_napatan: "kush",
+    kushite_rule_egypt_by: "kush",
+    taharqa_reign: "kush",
+    nuri_pyramid_use_secondary: "kush",
+    meroitic_period: "kush",
+    meroitic_period_bm: "kush",
+    meroe_royal_burials_from: "kush",
+    kush_kingdom_major_power: "kush"
+  };
+  var TRADITION_LABEL = {
+    egypt: "Ancient Egypt",
+    kush: "Kush · Nubia (Sudan)"
+  };
+  function sourceRecord(id) {
+    return sources_default.sources[id] || null;
+  }
+  function decorateRange(range) {
+    const pending = range.role === "pending" || range.start == null || range.end == null;
+    const secondary = range.role === "secondary";
+    const proxy = range.role === "proxy";
+    const alternative = /alternative chronology/i.test(range.kind || "");
+    return {
+      ...range,
+      pending,
+      secondary,
+      proxy,
+      alternative,
+      tradition: TRADITION[range.id] || "egypt",
+      traditionLabel: TRADITION_LABEL[TRADITION[range.id] || "egypt"],
+      displayed: !secondary,
+      source: sourceRecord(range.src)
+    };
+  }
+  function allRanges() {
+    return ranges_default.ranges.map(decorateRange);
+  }
+  function displayedRanges() {
+    return allRanges().filter((range) => range.displayed);
+  }
+  function rangeById(id) {
+    return allRanges().find((range) => range.id === id) || null;
+  }
+  var RANGE_CONVENTION = ranges_default.convention;
+  var WITHHELD_NOTE = "One secondary Nuri label was reconciled and is withheld from this clock. Taharqa’s reign is the count shown for Nuri, and that reign is not a construction date for Nuri Pyramid 1.";
+
+  // src/engine.mjs
+  var ORIGIN_MS = -62156764800000n;
+  var ORIGIN_UTC = "0000-05-01T00:00:00Z";
+  var TPS = 120n;
+  var GRAIN = 120n;
+  var COWRIE = 3600000n;
+  var TICKS_PER_DAY = 10368000n;
+  var MS_PER_DAY = 86400000n;
+  var SNAPSHOT_UTC = "2026-11-09T18:04:00Z";
+  var SNAPSHOT_MS = 1794247440000n;
+  var SNAPSHOT_LABEL = "Mon 9 Nov 2026 · 18:04 UTC · 1:04 PM EST";
+  var YEAR_MIN = -10000000n;
+  var YEAR_MAX = 10000000n;
+  var JDN_UNIX = 2440588n;
+  var MONTH_DAYS = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  function floorDiv(a, b) {
+    if (b === 0n) throw new Error("division by zero");
+    const q = a / b;
+    const r = a % b;
+    if (r !== 0n && a < 0n !== b < 0n) return q - 1n;
+    return q;
+  }
+  function floorMod(a, b) {
+    return a - floorDiv(a, b) * b;
+  }
+  function isLeap(year) {
+    const y = BigInt(year);
+    return floorMod(y, 4n) === 0n && (floorMod(y, 100n) !== 0n || floorMod(y, 400n) === 0n);
+  }
+  function daysInMonth(year, month) {
+    const m = Number(month);
+    if (m < 1 || m > 12) return 0;
+    if (m === 2 && isLeap(year)) return 29;
+    return MONTH_DAYS[m];
+  }
+  function daysFromCivil(year, month, day) {
+    let y = BigInt(year);
+    const m = BigInt(month);
+    const d = BigInt(day);
+    if (m <= 2n) y -= 1n;
+    const era = floorDiv(y, 400n);
+    const yoe = y - era * 400n;
+    const mp = m > 2n ? m - 3n : m + 9n;
+    const doy = floorDiv(153n * mp + 2n, 5n) + d - 1n;
+    const doe = yoe * 365n + floorDiv(yoe, 4n) - floorDiv(yoe, 100n) + doy;
+    return era * 146097n + doe - 719468n;
+  }
+  function jdnGregorian(year, month, day) {
+    const y0 = BigInt(year);
+    const m0 = BigInt(month);
+    const d = BigInt(day);
+    const a = floorDiv(14n - m0, 12n);
+    const y = y0 + 4800n - a;
+    const m = m0 + 12n * a - 3n;
+    return d + floorDiv(153n * m + 2n, 5n) + 365n * y + floorDiv(y, 4n) - floorDiv(y, 100n) + floorDiv(y, 400n) - 32045n;
+  }
+  function daysFromJdn(year, month, day) {
+    return jdnGregorian(year, month, day) - JDN_UNIX;
+  }
+  function multiplesIn(start, end, step) {
+    return floorDiv(end - 1n, step) - floorDiv(start - 1n, step);
+  }
+  function daysSerial(year, month, day) {
+    const y = BigInt(year);
+    const m = Number(month);
+    const fromYear0 = daysFromYear0Jan1(y) + BigInt(dayOfYear(y, m, Number(day)) - 1);
+    return fromYear0 - daysFromYear0Jan1(1970n);
+  }
+  function daysFromYear0Jan1(y) {
+    if (y >= 0n) {
+      const leaps2 = y === 0n ? 0n : floorDiv(y - 1n, 4n) - floorDiv(y - 1n, 100n) + floorDiv(y - 1n, 400n) + 1n;
+      return y * 365n + leaps2;
+    }
+    const leaps = multiplesIn(y, 0n, 4n) - multiplesIn(y, 0n, 100n) + multiplesIn(y, 0n, 400n);
+    return -(-y * 365n + leaps);
+  }
+  function dayOfYear(y, month, day) {
+    let n = Number(day);
+    for (let m = 1; m < month; m += 1) n += MONTH_DAYS[m];
+    if (month > 2 && isLeap(y)) n += 1;
+    return n;
+  }
+  function assertMethodsAgree(year, month, day) {
+    const a = daysFromCivil(year, month, day);
+    const b = daysFromJdn(year, month, day);
+    const c = daysSerial(year, month, day);
+    if (a !== b || a !== c) {
+      throw new Error(`day-count methods disagree at ${year}-${month}-${day}: A ${a} B ${b} C ${c}`);
+    }
+    return a;
+  }
+  function validateParts(parts) {
+    const y = BigInt(parts.year);
+    const month = Number(parts.month);
+    const day = Number(parts.day);
+    const hour = Number(parts.hour ?? 0);
+    const minute = Number(parts.minute ?? 0);
+    const second = Number(parts.second ?? 0);
+    const millisecond = Number(parts.millisecond ?? 0);
+    if (y < YEAR_MIN || y > YEAR_MAX) {
+      throw new Error(`Astronomical year ${y} is outside the supported math range ${YEAR_MIN} to ${YEAR_MAX}.`);
+    }
+    if (!Number.isInteger(month) || month < 1 || month > 12) throw new Error("Month must be an integer from 1 to 12.");
+    const dim = daysInMonth(y, month);
+    if (!Number.isInteger(day) || day < 1 || day > dim) {
+      if (month === 2 && day === 29) throw new Error(`Astronomical year ${y} is not a leap year, so 29 February is not a day.`);
+      throw new Error(`Day ${day} is not a day of month ${month} in astronomical year ${y}.`);
+    }
+    if (!Number.isInteger(hour) || hour < 0 || hour > 23) throw new Error("Hour must be an integer from 0 to 23.");
+    if (!Number.isInteger(minute) || minute < 0 || minute > 59) throw new Error("Minute must be an integer from 0 to 59.");
+    if (!Number.isInteger(second) || second < 0 || second > 59) {
+      throw new Error("Second must be an integer from 0 to 59. This arithmetic has no leap second.");
+    }
+    if (!Number.isInteger(millisecond) || millisecond < 0 || millisecond > 999) {
+      throw new Error("Millisecond must be an integer from 0 to 999.");
+    }
+    return {
+      year: y,
+      month: BigInt(month),
+      day: BigInt(day),
+      hour: BigInt(hour),
+      minute: BigInt(minute),
+      second: BigInt(second),
+      millisecond: BigInt(millisecond)
+    };
+  }
+  function civilToMs(parts) {
+    const p = validateParts(parts);
+    const days = assertMethodsAgree(p.year, p.month, p.day);
+    return days * MS_PER_DAY + p.hour * 3600000n + p.minute * 60000n + p.second * 1000n + p.millisecond;
+  }
+  function elapsedTicks(ms) {
+    const t = typeof ms === "bigint" ? ms : BigInt(ms);
+    return floorDiv((t - ORIGIN_MS) * TPS, 1000n);
+  }
+  function ticksAt(parts) {
+    const p = validateParts(parts);
+    const days = assertMethodsAgree(p.year, p.month, p.day);
+    const originDays = daysFromCivil(0n, 5n, 1n);
+    const secondTicks = (p.hour * 3600n + p.minute * 60n + p.second) * TPS;
+    const milliTicks = floorDiv(p.millisecond * TPS, 1000n);
+    return (days - originDays) * TICKS_PER_DAY + secondTicks + milliTicks;
+  }
+  function decomposeEuclid(n) {
+    const N = BigInt(n);
+    const cowrieIndex = floorDiv(N, COWRIE);
+    const rem = N - cowrieIndex * COWRIE;
+    const grains = floorDiv(rem, GRAIN);
+    const ticks = rem - grains * GRAIN;
+    return { cowrieIndex, grains, ticks };
+  }
+  function composeEuclid(parts) {
+    return BigInt(parts.cowrieIndex) * COWRIE + BigInt(parts.grains) * GRAIN + BigInt(parts.ticks);
+  }
+  function decomposeAbs(n) {
+    const N = BigInt(n);
+    const sign = N < 0n ? -1n : N > 0n ? 1n : 0n;
+    const mag = N < 0n ? -N : N;
+    const cowries = mag / COWRIE;
+    const rem = mag % COWRIE;
+    const grains = rem / GRAIN;
+    const ticks = rem % GRAIN;
+    return { sign, cowries, grains, ticks };
+  }
+  function composeAbs(parts) {
+    const mag = BigInt(parts.cowries) * COWRIE + BigInt(parts.grains) * GRAIN + BigInt(parts.ticks);
+    const sign = BigInt(parts.sign);
+    if (sign === 0n) return 0n;
+    return sign < 0n ? -mag : mag;
+  }
+  function bceCeToAstro(year, era) {
+    const y = BigInt(year);
+    if (y <= 0n) {
+      throw new Error("Historical BCE/CE years start at 1. There is no year 0. 1 BCE is astronomical year 0.");
+    }
+    if (era === "BCE") return 1n - y;
+    if (era === "CE") return y;
+    throw new Error("Era must be BCE or CE.");
+  }
+  function formatGrouped(n) {
+    const v = BigInt(n);
+    const neg = v < 0n;
+    const digits = (neg ? -v : v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return neg ? `-${digits}` : digits;
+  }
+  function gcd(a, b) {
+    let x = a < 0n ? -a : a;
+    let y = b < 0n ? -b : b;
+    while (y) {
+      const t = x % y;
+      x = y;
+      y = t;
+    }
+    return x;
+  }
+  function fraction(numerator, denominator) {
+    let num = BigInt(numerator);
+    let den = BigInt(denominator);
+    if (den === 0n) throw new Error("zero denominator");
+    if (den < 0n) {
+      num = -num;
+      den = -den;
+    }
+    const g = gcd(num, den);
+    num /= g;
+    den /= g;
+    return { numerator: num, denominator: den, text: den === 1n ? num.toString() : `${num}/${den}` };
+  }
+  function formatDecimal(numerator, denominator, places) {
+    let num = BigInt(numerator);
+    let den = BigInt(denominator);
+    if (den < 0n) {
+      num = -num;
+      den = -den;
+    }
+    const neg = num < 0n;
+    if (neg) num = -num;
+    const scale = 10n ** BigInt(places);
+    const q = num * scale / den;
+    const r = num * scale % den;
+    const ip = q / scale;
+    const fp = (q % scale).toString().padStart(places, "0");
+    return `${neg ? "-" : ""}${formatGrouped(ip)}.${fp}${r === 0n ? "" : "…"}`;
+  }
+  function absMixed(n) {
+    const a = decomposeAbs(n);
+    const body = `(${formatGrouped(a.cowries)} cowries + ${formatGrouped(a.grains)} grains + ${a.ticks} ticks)`;
+    return a.sign < 0n ? `−${body}` : body;
+  }
+  function durationMixed(n) {
+    const a = decomposeAbs(n);
+    return `${formatGrouped(a.cowries)} cowries + ${formatGrouped(a.grains)} grains + ${a.ticks} ticks`;
+  }
+  function signedYearStamp(year) {
+    const y = BigInt(year);
+    const digits = (y < 0n ? -y : y).toString().padStart(4, "0");
+    return `${y < 0n ? "-" : "+"}${digits}`;
+  }
+  function envelopeFromHistorical(startYear, startEra, endYear, endEra) {
+    const ya = bceCeToAstro(startYear, startEra);
+    const yLast = bceCeToAstro(endYear, endEra);
+    if (yLast < ya) throw new Error("The last source year is earlier than the first source year.");
+    const yb = yLast + 1n;
+    return envelopeFromAstro(ya, yLast);
+  }
+  function envelopeFromAstro(firstYear, lastYearInclusive) {
+    const ya = BigInt(firstYear);
+    const yLast = BigInt(lastYearInclusive);
+    if (yLast < ya) throw new Error("The last astronomical year is earlier than the first.");
+    const yb = yLast + 1n;
+    const start = { year: ya, month: 1, day: 1 };
+    const end = { year: yb, month: 1, day: 1 };
+    const startMs = civilToMs(start);
+    const endMs = civilToMs(end);
+    const nStart = elapsedTicks(startMs);
+    const nEnd = elapsedTicks(endMs);
+    const days = (nEnd - nStart) / TICKS_PER_DAY;
+    if ((nEnd - nStart) % TICKS_PER_DAY !== 0n) {
+      throw new Error("Midnight anchors are not on a tick boundary, which this convention requires.");
+    }
+    const lastYearDays = daysFromCivil(yb, 1, 1) - daysFromCivil(yLast, 1, 1);
+    return {
+      firstAstronomicalYear: ya,
+      lastAstronomicalYearInclusive: yLast,
+      endFenceAstronomicalYear: yb,
+      start,
+      endExclusive: end,
+      startMs,
+      endMs,
+      nStart,
+      nEndExclusive: nEnd,
+      lastIncludedTick: nEnd - 1n,
+      envelopeDays: days,
+      lastYearDays,
+      lastYearLeap: isLeap(yLast),
+      stamp: `[${signedYearStamp(ya)}-01-01T00:00:00Z, ${signedYearStamp(yb)}-01-01T00:00:00Z)`
+    };
+  }
+  function pointRecord(nAnchor, nSnapshot = snapshotN()) {
+    const n = BigInt(nAnchor);
+    const snap = BigInt(nSnapshot);
+    const abs = decomposeAbs(n);
+    const euc = decomposeEuclid(n);
+    const dur = snap - n;
+    const durAbs = decomposeAbs(dur);
+    const grains = fraction(n, GRAIN);
+    const cowries = fraction(n, COWRIE);
+    const durGrains = fraction(dur, GRAIN);
+    const durDays = fraction(dur, TICKS_PER_DAY);
+    const julian = fraction(dur * 100n, TICKS_PER_DAY * 36525n);
+    return {
+      tick_position_N: n,
+      tick_index_N_plus_1: n + 1n,
+      sign: abs.sign,
+      abs_decomposition: { cowries: abs.cowries, grains: abs.grains, ticks: abs.ticks },
+      abs_mixed: absMixed(n),
+      euclidean: { cowrie_index: euc.cowrieIndex, grains: euc.grains, ticks: euc.ticks },
+      total_grains_exact: grains.text,
+      total_cowries_exact: cowries.text,
+      total_cowries_decimal: formatDecimal(n, COWRIE, 6),
+      duration_to_snapshot_ticks: dur,
+      duration_mixed: durationMixed(dur),
+      duration_full_cowries: durAbs.cowries,
+      duration_cowrie_remainder_ticks: dur - durAbs.cowries * COWRIE,
+      duration_grains_exact: durGrains.text,
+      duration_days_exact: durDays.text,
+      duration_days_decimal: formatDecimal(dur, TICKS_PER_DAY, 6),
+      duration_julian_years_365_25_decimal: formatDecimal(julian.numerator, julian.denominator, 4)
+    };
+  }
+  var cachedSnapshotN;
+  function snapshotN() {
+    if (cachedSnapshotN === void 0) {
+      cachedSnapshotN = ticksAt({ year: 2026, month: 11, day: 9, hour: 18, minute: 4, second: 0, millisecond: 0 });
+    }
+    return cachedSnapshotN;
+  }
+  function durationSemantics(nStart, nEndExclusive, nSnapshot = snapshotN()) {
+    const snap = BigInt(nSnapshot);
+    const dStart = snap - BigInt(nStart);
+    const dEnd = snap - BigInt(nEndExclusive);
+    const lastIncluded = BigInt(nEndExclusive) - 1n;
+    const dLast = snap - lastIncluded;
+    return {
+      fixtureClosedPair: [dEnd, dStart],
+      fixtureBracketNote: "Reference METHOD writes [D(end_exclusive), D(start)]. Those two numbers are the fences. The lower fence is not attained.",
+      continuous: {
+        lowerExclusive: dEnd,
+        upperInclusive: dStart,
+        notation: "(D(end_exclusive), D(start)]"
+      },
+      discrete: {
+        lowerInclusive: dEnd + 1n,
+        upperInclusive: dStart,
+        notation: "[D(end_exclusive) + 1 tick, D(start)]"
+      },
+      lastIncludedTick: lastIncluded,
+      elapsedFromLastIncludedTick: dLast,
+      identity: dLast === dEnd + 1n
+    };
+  }
+  function markerFor(n) {
+    const v = BigInt(n);
+    if (v > 0n) return { code: "after", text: "After the provisional epoch" };
+    if (v < 0n) return { code: "before", text: "Before the provisional epoch" };
+    return { code: "at", text: "At the provisional epoch" };
+  }
+  function ringPosition(n) {
+    return Number(floorMod(BigInt(n), 120n));
+  }
+  function gizaMidnightCheck(nSnapshot = snapshotN()) {
+    const midnight = ticksAt({ year: 2026, month: 11, day: 8, hour: 22, minute: 0, second: 0 });
+    const delta = BigInt(nSnapshot) - midnight;
+    return { utc: "2026-11-08T22:00:00Z", nMidnight: midnight, deltaTicks: delta };
+  }
+
+  // src/reading.mjs
+  function selectReading({ mode, target, evaluated, snapshotN: snapshotN2, customN = null }) {
+    const snap = BigInt(snapshotN2);
+    if (mode === "elapsed") {
+      if (!evaluated || evaluated.pending) {
+        return {
+          ok: false,
+          message: "This selection has no sourced year range, so there is no elapsed interval."
+        };
+      }
+      const sem = evaluated.duration_semantics;
+      let n2;
+      let bound2;
+      if (target === "fence") {
+        n2 = BigInt(sem.excluded_lower_fence_ticks);
+        bound2 = "fence";
+      } else if (target === "last") {
+        n2 = BigInt(sem.discrete_lower_inclusive_ticks);
+        bound2 = "last";
+      } else {
+        n2 = BigInt(sem.discrete_upper_inclusive_ticks);
+        bound2 = "start";
+      }
+      return {
+        ok: true,
+        mode: "elapsed",
+        bound: bound2,
+        n: n2,
+        showIndex: false,
+        attained: bound2 !== "fence",
+        marker: bound2 === "fence" ? "Excluded fence · not an attained duration" : "Elapsed duration to the fixed snapshot"
+      };
+    }
+    let n;
+    let bound = target;
+    if (target === "start" && evaluated && !evaluated.pending) n = BigInt(evaluated.start.tick_position_N);
+    else if (target === "last" && evaluated && !evaluated.pending) n = BigInt(evaluated.last_included_tick.tick_position_N);
+    else if (target === "fence" && evaluated && !evaluated.pending) n = BigInt(evaluated.end_exclusive.tick_position_N);
+    else if (target === "custom" && customN !== null && customN !== void 0) n = BigInt(customN);
+    else {
+      n = snap;
+      bound = "snapshot";
+    }
+    return {
+      ok: true,
+      mode: "absolute",
+      bound,
+      n,
+      showIndex: true,
+      index: n + 1n,
+      attained: bound !== "fence",
+      marker: null
+    };
+  }
+
+  // data/received/egypt-grain-clock-fixtures-20261109.json
+  var egypt_grain_clock_fixtures_20261109_default = {
+    constants: {
+      ORIGIN: "0000-05-01T00:00:00Z (astronomical year 0 = 1 BCE, proleptic Gregorian, UTC) · PROVISIONAL",
+      ORIGIN_MS: -621567648e5,
+      ORIGIN_unix_days: -719407,
+      TPS: 120,
+      GRAIN_ticks: 120,
+      COWRIE_grains: 3e4,
+      COWRIE_ticks: 36e5,
+      TICKS_PER_DAY: 10368e3,
+      rate_status: "PROVISIONAL",
+      SNAPSHOT: "2026-11-09T18:04:00Z = Mon 9 Nov 2026 1:04 PM EST",
+      SNAPSHOT_ms: 179424744e4,
+      SNAPSHOT_N: 7674121468800
+    },
+    conventions: {
+      calendar: "proleptic Gregorian, astronomical year numbering (n BCE → 1 − n; no year 0 in source labels)",
+      envelope: "half-open [Jan 1 00:00Z of first sourced year, Jan 1 00:00Z of year after last sourced year); the full last year is included",
+      N: "N = (days(date) − days(origin))·10,368,000 + seconds_of_day·120 = floor((ms − ORIGIN_MS)·120/1000); negative before origin",
+      tick_index: "N + 1, kept for compatibility with the snapshot fixture; for N < 0 it is just N + 1 (no special meaning)",
+      abs_decomposition: "sign(N) and |N| = cowries·3,600,000 + grains·120 + ticks with all parts ≥ 0 (the human-readable “before origin” form)",
+      euclidean: "N = cowrie_index·3,600,000 + grains·120 + ticks, with 0 ≤ grains < 30,000 and 0 ≤ ticks < 120; cowrie_index = floor(N/3,600,000) (the clock-face form)",
+      duration: "D = SNAPSHOT_N − N ≥ 0; full cowries = floor(D/3,600,000) and the remainder is given separately"
+    },
+    tests_passed: 39,
+    tests_total: 39,
+    tests: [
+      {
+        name: "snapshot via calendar = 7,674,121,468,800",
+        pass: true
+      },
+      {
+        name: "snapshot ms = 1794247440000",
+        pass: true
+      },
+      {
+        name: "snapshot via ms formula",
+        pass: true
+      },
+      {
+        name: "origin is tick 0",
+        pass: true
+      },
+      {
+        name: "ORIGIN_MS matches calendar",
+        pass: true
+      },
+      {
+        name: "methods A and B agree and round-trip on all 1,863,102 days −3000-01-01…2100-12-31",
+        pass: true
+      },
+      {
+        name: "JDN 2000-01-01 = 2451545",
+        pass: true
+      },
+      {
+        name: "JDN proleptic Gregorian −4713-11-24 = 0",
+        pass: true
+      },
+      {
+        name: "Unix epoch 1970-01-01 = day 0",
+        pass: true
+      },
+      {
+        name: "leap(0) = True and Feb has 29 days",
+        pass: true
+      },
+      {
+        name: "leap(-1) = False and Feb has 28 days",
+        pass: true
+      },
+      {
+        name: "leap(-4) = True and Feb has 29 days",
+        pass: true
+      },
+      {
+        name: "leap(-100) = False and Feb has 28 days",
+        pass: true
+      },
+      {
+        name: "leap(-400) = True and Feb has 29 days",
+        pass: true
+      },
+      {
+        name: "leap(1900) = False and Feb has 28 days",
+        pass: true
+      },
+      {
+        name: "leap(2000) = True and Feb has 29 days",
+        pass: true
+      },
+      {
+        name: "leap(-2500) = False and Feb has 28 days",
+        pass: true
+      },
+      {
+        name: "leap(-2400) = True and Feb has 29 days",
+        pass: true
+      },
+      {
+        name: "year −1 (2 BCE) has 365 days",
+        pass: true
+      },
+      {
+        name: "year 0 (1 BCE) has 366 days",
+        pass: true
+      },
+      {
+        name: "year 1 CE has 365 days",
+        pass: true
+      },
+      {
+        name: "31 Dec 1 BCE → 1 Jan 1 CE is exactly 1 day",
+        pass: true
+      },
+      {
+        name: "1 Jan 1 CE = origin + 245 days (May–Dec of year 0)",
+        pass: true
+      },
+      {
+        name: "1 Jan 1 BCE (year 0) = origin − 121 days",
+        pass: true
+      },
+      {
+        name: "astro(1,BCE)=0, astro(2667,BCE)=−2666",
+        pass: true
+      },
+      {
+        name: "recompose 0",
+        pass: true
+      },
+      {
+        name: "recompose 1",
+        pass: true
+      },
+      {
+        name: "recompose -1",
+        pass: true
+      },
+      {
+        name: "recompose 119",
+        pass: true
+      },
+      {
+        name: "recompose -119",
+        pass: true
+      },
+      {
+        name: "recompose 120",
+        pass: true
+      },
+      {
+        name: "recompose -120",
+        pass: true
+      },
+      {
+        name: "recompose 3599999",
+        pass: true
+      },
+      {
+        name: "recompose -3600000",
+        pass: true
+      },
+      {
+        name: "recompose -3600001",
+        pass: true
+      },
+      {
+        name: "recompose -17769000000000",
+        pass: true
+      },
+      {
+        name: "recompose 7674121468800",
+        pass: true
+      },
+      {
+        name: "snapshot nested = 2,131,700 c + 12,240 g + 0 t",
+        pass: true
+      },
+      {
+        name: "|N| < 2^53 everywhere used (JS Number safe; BigInt still recommended)",
+        pass: true
+      }
+    ],
+    ranges: [
+      {
+        id: "djoser_reign",
+        theme: "saqqara",
+        kind: "ruler reign (approx.)",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Djoser (Netjerykhet) reign, early Dynasty 3",
+        approx: "c.",
+        src: "mota_djoser",
+        url: "https://egymonuments.gov.eg/en/monuments/the-step-pyramid-complex-of-djoser",
+        note: "Reign, not the completion date of the Step Pyramid",
+        source_years: "c. 2667 BCE – 2648 BCE",
+        envelope: "[-2666-01-01T00:00:00Z, -2646-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2666..-2647 inclusive (full last year 2648 BCE included); end bound = Jan 1 of astronomical year -2646 (= Jan 1, 2647 BCE)",
+        envelope_days: 7305,
+        start: {
+          tick_position_N: -10096949376e3,
+          tick_index_N_plus_1: -10096949375999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2804708,
+            grains: 4800,
+            ticks: 0
+          },
+          abs_mixed: "−(2,804,708 cowries + 4,800 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2804709,
+            grains: 25200,
+            ticks: 0
+          },
+          total_grains_exact: "-84141244800",
+          total_cowries_exact: "-70117704/25",
+          total_cowries_decimal: "-2,804,708.160000",
+          duration_to_snapshot_ticks: 17771070844800,
+          duration_mixed: "4,936,408 cowries + 17,040 grains + 0 ticks",
+          duration_full_cowries: 4936408,
+          duration_cowrie_remainder_ticks: 2044800,
+          duration_grains_exact: "148092257040",
+          duration_days_exact: "617051071/360",
+          duration_days_decimal: "1,714,030.752777…",
+          duration_julian_years_365_25_decimal: "4,692.7604…"
+        },
+        end_exclusive: {
+          tick_position_N: -10021211136e3,
+          tick_index_N_plus_1: -10021211135999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2783669,
+            grains: 22800,
+            ticks: 0
+          },
+          abs_mixed: "−(2,783,669 cowries + 22,800 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2783670,
+            grains: 7200,
+            ticks: 0
+          },
+          total_grains_exact: "-83510092800",
+          total_cowries_exact: "-69591744/25",
+          total_cowries_decimal: "-2,783,669.760000",
+          duration_to_snapshot_ticks: 17695332604800,
+          duration_mixed: "4,915,370 cowries + 5,040 grains + 0 ticks",
+          duration_full_cowries: 4915370,
+          duration_cowrie_remainder_ticks: 604800,
+          duration_grains_exact: "147461105040",
+          duration_days_exact: "614421271/360",
+          duration_days_decimal: "1,706,725.752777…",
+          duration_julian_years_365_25_decimal: "4,672.7604…"
+        },
+        duration_to_snapshot_range_ticks: [
+          17695332604800,
+          17771070844800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,706,725.752777…",
+          "1,714,030.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "old_kingdom",
+        theme: "context",
+        kind: "period (approx.)",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Old Kingdom, Dynasties 3–6 (Met essay title)",
+        approx: "ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "The Met's own URL says 2150 while its title says 2130; the title value is used here. A different chronology from MoTA's Djoser dates.",
+        source_years: "ca. 2649 BCE – 2130 BCE",
+        envelope: "[-2648-01-01T00:00:00Z, -2128-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2648..-2129 inclusive (full last year 2130 BCE included); end bound = Jan 1 of astronomical year -2128 (= Jan 1, 2129 BCE)",
+        envelope_days: 189926,
+        start: {
+          tick_position_N: -10028790144e3,
+          tick_index_N_plus_1: -10028790143999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2785775,
+            grains: 1200,
+            ticks: 0
+          },
+          abs_mixed: "−(2,785,775 cowries + 1,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2785776,
+            grains: 28800,
+            ticks: 0
+          },
+          total_grains_exact: "-83573251200",
+          total_cowries_exact: "-69644376/25",
+          total_cowries_decimal: "-2,785,775.040000",
+          duration_to_snapshot_ticks: 17702911612800,
+          duration_mixed: "4,917,475 cowries + 13,440 grains + 0 ticks",
+          duration_full_cowries: 4917475,
+          duration_cowrie_remainder_ticks: 1612800,
+          duration_grains_exact: "147524263440",
+          duration_days_exact: "614684431/360",
+          duration_days_decimal: "1,707,456.752777…",
+          duration_julian_years_365_25_decimal: "4,674.7618…"
+        },
+        end_exclusive: {
+          tick_position_N: -8059637376e3,
+          tick_index_N_plus_1: -8059637375999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2238788,
+            grains: 4800,
+            ticks: 0
+          },
+          abs_mixed: "−(2,238,788 cowries + 4,800 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2238789,
+            grains: 25200,
+            ticks: 0
+          },
+          total_grains_exact: "-67163644800",
+          total_cowries_exact: "-55969704/25",
+          total_cowries_decimal: "-2,238,788.160000",
+          duration_to_snapshot_ticks: 15733758844800,
+          duration_mixed: "4,370,488 cowries + 17,040 grains + 0 ticks",
+          duration_full_cowries: 4370488,
+          duration_cowrie_remainder_ticks: 2044800,
+          duration_grains_exact: "131114657040",
+          duration_days_exact: "546311071/360",
+          duration_days_decimal: "1,517,530.752777…",
+          duration_julian_years_365_25_decimal: "4,154.7727…"
+        },
+        duration_to_snapshot_range_ticks: [
+          15733758844800,
+          17702911612800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,517,530.752777…",
+          "1,707,456.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "dynasty4",
+        theme: "giza+dahshur",
+        kind: "dynasty (approx.)",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Dynasty 4",
+        approx: "ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "",
+        source_years: "ca. 2575 BCE – 2465 BCE",
+        envelope: "[-2574-01-01T00:00:00Z, -2463-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2574..-2464 inclusive (full last year 2465 BCE included); end bound = Jan 1 of astronomical year -2463 (= Jan 1, 2464 BCE)",
+        envelope_days: 40542,
+        start: {
+          tick_position_N: -974856384e4,
+          tick_index_N_plus_1: -9748563839999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2707934,
+            grains: 12e3,
+            ticks: 0
+          },
+          abs_mixed: "−(2,707,934 cowries + 12,000 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2707935,
+            grains: 18e3,
+            ticks: 0
+          },
+          total_grains_exact: "-81238032000",
+          total_cowries_exact: "-13539672/5",
+          total_cowries_decimal: "-2,707,934.400000",
+          duration_to_snapshot_ticks: 17422685308800,
+          duration_mixed: "4,839,634 cowries + 24,240 grains + 0 ticks",
+          duration_full_cowries: 4839634,
+          duration_cowrie_remainder_ticks: 2908800,
+          duration_grains_exact: "145189044240",
+          duration_days_exact: "604954351/360",
+          duration_days_decimal: "1,680,428.752777…",
+          duration_julian_years_365_25_decimal: "4,600.7631…"
+        },
+        end_exclusive: {
+          tick_position_N: -9328224384e3,
+          tick_index_N_plus_1: -9328224383999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2591173,
+            grains: 13200,
+            ticks: 0
+          },
+          abs_mixed: "−(2,591,173 cowries + 13,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2591174,
+            grains: 16800,
+            ticks: 0
+          },
+          total_grains_exact: "-77735203200",
+          total_cowries_exact: "-64779336/25",
+          total_cowries_decimal: "-2,591,173.440000",
+          duration_to_snapshot_ticks: 17002345852800,
+          duration_mixed: "4,722,873 cowries + 25,440 grains + 0 ticks",
+          duration_full_cowries: 4722873,
+          duration_cowrie_remainder_ticks: 3052800,
+          duration_grains_exact: "141686215440",
+          duration_days_exact: "590359231/360",
+          duration_days_decimal: "1,639,886.752777…",
+          duration_julian_years_365_25_decimal: "4,489.7652…"
+        },
+        duration_to_snapshot_range_ticks: [
+          17002345852800,
+          17422685308800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,639,886.752777…",
+          "1,680,428.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "sneferu_reign",
+        theme: "dahshur",
+        kind: "ruler reign (approx.)",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Sneferu reign (Bent and Red Pyramids, Dahshur)",
+        approx: "r. ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "MoTA: Red Pyramid 'may have been started in the 13th year of his reign, taking 10 years', which is relative to the reign, not an absolute date",
+        source_years: "r. ca. 2575 BCE – 2551 BCE",
+        envelope: "[-2574-01-01T00:00:00Z, -2549-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2574..-2550 inclusive (full last year 2551 BCE included); end bound = Jan 1 of astronomical year -2549 (= Jan 1, 2550 BCE)",
+        envelope_days: 9131,
+        start: {
+          tick_position_N: -974856384e4,
+          tick_index_N_plus_1: -9748563839999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2707934,
+            grains: 12e3,
+            ticks: 0
+          },
+          abs_mixed: "−(2,707,934 cowries + 12,000 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2707935,
+            grains: 18e3,
+            ticks: 0
+          },
+          total_grains_exact: "-81238032000",
+          total_cowries_exact: "-13539672/5",
+          total_cowries_decimal: "-2,707,934.400000",
+          duration_to_snapshot_ticks: 17422685308800,
+          duration_mixed: "4,839,634 cowries + 24,240 grains + 0 ticks",
+          duration_full_cowries: 4839634,
+          duration_cowrie_remainder_ticks: 2908800,
+          duration_grains_exact: "145189044240",
+          duration_days_exact: "604954351/360",
+          duration_days_decimal: "1,680,428.752777…",
+          duration_julian_years_365_25_decimal: "4,600.7631…"
+        },
+        end_exclusive: {
+          tick_position_N: -9653893632e3,
+          tick_index_N_plus_1: -9653893631999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2681637,
+            grains: 3600,
+            ticks: 0
+          },
+          abs_mixed: "−(2,681,637 cowries + 3,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2681638,
+            grains: 26400,
+            ticks: 0
+          },
+          total_grains_exact: "-80449113600",
+          total_cowries_exact: "-67040928/25",
+          total_cowries_decimal: "-2,681,637.120000",
+          duration_to_snapshot_ticks: 17328015100800,
+          duration_mixed: "4,813,337 cowries + 15,840 grains + 0 ticks",
+          duration_full_cowries: 4813337,
+          duration_cowrie_remainder_ticks: 1900800,
+          duration_grains_exact: "144400125840",
+          duration_days_exact: "601667191/360",
+          duration_days_decimal: "1,671,297.752777…",
+          duration_julian_years_365_25_decimal: "4,575.7638…"
+        },
+        duration_to_snapshot_range_ticks: [
+          17328015100800,
+          17422685308800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,671,297.752777…",
+          "1,680,428.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "khufu_reign_met",
+        theme: "giza",
+        kind: "ruler reign (approx.)",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Khufu reign · Met chronology",
+        approx: "r. ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "",
+        source_years: "r. ca. 2551 BCE – 2528 BCE",
+        envelope: "[-2550-01-01T00:00:00Z, -2526-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2550..-2527 inclusive (full last year 2528 BCE included); end bound = Jan 1 of astronomical year -2526 (= Jan 1, 2527 BCE)",
+        envelope_days: 8766,
+        start: {
+          tick_position_N: -9657677952e3,
+          tick_index_N_plus_1: -9657677951999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2682688,
+            grains: 9600,
+            ticks: 0
+          },
+          abs_mixed: "−(2,682,688 cowries + 9,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2682689,
+            grains: 20400,
+            ticks: 0
+          },
+          total_grains_exact: "-80480649600",
+          total_cowries_exact: "-67067208/25",
+          total_cowries_decimal: "-2,682,688.320000",
+          duration_to_snapshot_ticks: 17331799420800,
+          duration_mixed: "4,814,388 cowries + 21,840 grains + 0 ticks",
+          duration_full_cowries: 4814388,
+          duration_cowrie_remainder_ticks: 2620800,
+          duration_grains_exact: "144431661840",
+          duration_days_exact: "601798591/360",
+          duration_days_decimal: "1,671,662.752777…",
+          duration_julian_years_365_25_decimal: "4,576.7631…"
+        },
+        end_exclusive: {
+          tick_position_N: -9566792064e3,
+          tick_index_N_plus_1: -9566792063999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2657442,
+            grains: 7200,
+            ticks: 0
+          },
+          abs_mixed: "−(2,657,442 cowries + 7,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2657443,
+            grains: 22800,
+            ticks: 0
+          },
+          total_grains_exact: "-79723267200",
+          total_cowries_exact: "-66436056/25",
+          total_cowries_decimal: "-2,657,442.240000",
+          duration_to_snapshot_ticks: 17240913532800,
+          duration_mixed: "4,789,142 cowries + 19,440 grains + 0 ticks",
+          duration_full_cowries: 4789142,
+          duration_cowrie_remainder_ticks: 2332800,
+          duration_grains_exact: "143674279440",
+          duration_days_exact: "598642831/360",
+          duration_days_decimal: "1,662,896.752777…",
+          duration_julian_years_365_25_decimal: "4,552.7631…"
+        },
+        duration_to_snapshot_range_ticks: [
+          17240913532800,
+          17331799420800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,662,896.752777…",
+          "1,671,662.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "khafre_reign_met",
+        theme: "giza",
+        kind: "ruler reign (approx.)",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Khafre reign · Met chronology",
+        approx: "ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "",
+        source_years: "ca. 2520 BCE – 2494 BCE",
+        envelope: "[-2519-01-01T00:00:00Z, -2492-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2519..-2493 inclusive (full last year 2494 BCE included); end bound = Jan 1 of astronomical year -2492 (= Jan 1, 2493 BCE)",
+        envelope_days: 9860,
+        start: {
+          tick_position_N: -9540281088e3,
+          tick_index_N_plus_1: -9540281087999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2650078,
+            grains: 2400,
+            ticks: 0
+          },
+          abs_mixed: "−(2,650,078 cowries + 2,400 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2650079,
+            grains: 27600,
+            ticks: 0
+          },
+          total_grains_exact: "-79502342400",
+          total_cowries_exact: "-66251952/25",
+          total_cowries_decimal: "-2,650,078.080000",
+          duration_to_snapshot_ticks: 17214402556800,
+          duration_mixed: "4,781,778 cowries + 14,640 grains + 0 ticks",
+          duration_full_cowries: 4781778,
+          duration_cowrie_remainder_ticks: 1756800,
+          duration_grains_exact: "143453354640",
+          duration_days_exact: "597722311/360",
+          duration_days_decimal: "1,660,339.752777…",
+          duration_julian_years_365_25_decimal: "4,545.7624…"
+        },
+        end_exclusive: {
+          tick_position_N: -9438052608e3,
+          tick_index_N_plus_1: -9438052607999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2621681,
+            grains: 8400,
+            ticks: 0
+          },
+          abs_mixed: "−(2,621,681 cowries + 8,400 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2621682,
+            grains: 21600,
+            ticks: 0
+          },
+          total_grains_exact: "-78650438400",
+          total_cowries_exact: "-65542032/25",
+          total_cowries_decimal: "-2,621,681.280000",
+          duration_to_snapshot_ticks: 17112174076800,
+          duration_mixed: "4,753,381 cowries + 20,640 grains + 0 ticks",
+          duration_full_cowries: 4753381,
+          duration_cowrie_remainder_ticks: 2476800,
+          duration_grains_exact: "142601450640",
+          duration_days_exact: "594172711/360",
+          duration_days_decimal: "1,650,479.752777…",
+          duration_julian_years_365_25_decimal: "4,518.7672…"
+        },
+        duration_to_snapshot_range_ticks: [
+          17112174076800,
+          17214402556800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,650,479.752777…",
+          "1,660,339.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "menkaure_reign_met",
+        theme: "giza",
+        kind: "ruler reign (approx.)",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Menkaure reign · Met chronology",
+        approx: "ca.",
+        src: "met_oldkingdom",
+        url: "https://www.metmuseum.org/essays/egypt-in-the-old-kingdom-ca-2649-2150-b-c",
+        note: "",
+        source_years: "ca. 2490 BCE – 2472 BCE",
+        envelope: "[-2489-01-01T00:00:00Z, -2470-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2489..-2471 inclusive (full last year 2472 BCE included); end bound = Jan 1 of astronomical year -2470 (= Jan 1, 2471 BCE)",
+        envelope_days: 6940,
+        start: {
+          tick_position_N: -942668928e4,
+          tick_index_N_plus_1: -9426689279999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2618524,
+            grains: 24e3,
+            ticks: 0
+          },
+          abs_mixed: "−(2,618,524 cowries + 24,000 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2618525,
+            grains: 6e3,
+            ticks: 0
+          },
+          total_grains_exact: "-78555744000",
+          total_cowries_exact: "-13092624/5",
+          total_cowries_decimal: "-2,618,524.800000",
+          duration_to_snapshot_ticks: 17100810748800,
+          duration_mixed: "4,750,225 cowries + 6,240 grains + 0 ticks",
+          duration_full_cowries: 4750225,
+          duration_cowrie_remainder_ticks: 748800,
+          duration_grains_exact: "142506756240",
+          duration_days_exact: "593778151/360",
+          duration_days_decimal: "1,649,383.752777…",
+          duration_julian_years_365_25_decimal: "4,515.7666…"
+        },
+        end_exclusive: {
+          tick_position_N: -935473536e4,
+          tick_index_N_plus_1: -9354735359999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2598537,
+            grains: 18e3,
+            ticks: 0
+          },
+          abs_mixed: "−(2,598,537 cowries + 18,000 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2598538,
+            grains: 12e3,
+            ticks: 0
+          },
+          total_grains_exact: "-77956128000",
+          total_cowries_exact: "-12992688/5",
+          total_cowries_decimal: "-2,598,537.600000",
+          duration_to_snapshot_ticks: 17028856828800,
+          duration_mixed: "4,730,238 cowries + 240 grains + 0 ticks",
+          duration_full_cowries: 4730238,
+          duration_cowrie_remainder_ticks: 28800,
+          duration_grains_exact: "141907140240",
+          duration_days_exact: "591279751/360",
+          duration_days_decimal: "1,642,443.752777…",
+          duration_julian_years_365_25_decimal: "4,496.7659…"
+        },
+        duration_to_snapshot_range_ticks: [
+          17028856828800,
+          17100810748800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,642,443.752777…",
+          "1,649,383.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "khufu_reign_mota",
+        theme: "giza",
+        kind: "ruler reign (approx.), alternative chronology",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Khufu reign · MoTA chronology",
+        approx: "c.",
+        src: "mota_workers",
+        url: "https://egymonuments.gov.eg/en/monuments/workers-town-and-cemetery/",
+        note: "Differs from the Met by 38 years. Both are kept.",
+        source_years: "c. 2589 BCE – 2566 BCE",
+        envelope: "[-2588-01-01T00:00:00Z, -2564-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2588..-2565 inclusive (full last year 2566 BCE included); end bound = Jan 1 of astronomical year -2564 (= Jan 1, 2565 BCE)",
+        envelope_days: 8766,
+        start: {
+          tick_position_N: -9801585792e3,
+          tick_index_N_plus_1: -9801585791999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2722662,
+            grains: 21600,
+            ticks: 0
+          },
+          abs_mixed: "−(2,722,662 cowries + 21,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2722663,
+            grains: 8400,
+            ticks: 0
+          },
+          total_grains_exact: "-81679881600",
+          total_cowries_exact: "-68066568/25",
+          total_cowries_decimal: "-2,722,662.720000",
+          duration_to_snapshot_ticks: 17475707260800,
+          duration_mixed: "4,854,363 cowries + 3,840 grains + 0 ticks",
+          duration_full_cowries: 4854363,
+          duration_cowrie_remainder_ticks: 460800,
+          duration_grains_exact: "145630893840",
+          duration_days_exact: "606795391/360",
+          duration_days_decimal: "1,685,542.752777…",
+          duration_julian_years_365_25_decimal: "4,614.7645…"
+        },
+        end_exclusive: {
+          tick_position_N: -9710699904e3,
+          tick_index_N_plus_1: -9710699903999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2697416,
+            grains: 19200,
+            ticks: 0
+          },
+          abs_mixed: "−(2,697,416 cowries + 19,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2697417,
+            grains: 10800,
+            ticks: 0
+          },
+          total_grains_exact: "-80922499200",
+          total_cowries_exact: "-67435416/25",
+          total_cowries_decimal: "-2,697,416.640000",
+          duration_to_snapshot_ticks: 17384821372800,
+          duration_mixed: "4,829,117 cowries + 1,440 grains + 0 ticks",
+          duration_full_cowries: 4829117,
+          duration_cowrie_remainder_ticks: 172800,
+          duration_grains_exact: "144873511440",
+          duration_days_exact: "603639631/360",
+          duration_days_decimal: "1,676,776.752777…",
+          duration_julian_years_365_25_decimal: "4,590.7645…"
+        },
+        duration_to_snapshot_range_ticks: [
+          17384821372800,
+          17475707260800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,676,776.752777…",
+          "1,685,542.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "khafre_reign_mota",
+        theme: "giza",
+        kind: "ruler reign (approx.), alternative chronology",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Khafre reign · MoTA chronology",
+        approx: "c.",
+        src: "mota_workers",
+        url: "https://egymonuments.gov.eg/en/monuments/workers-town-and-cemetery/",
+        note: "",
+        source_years: "c. 2558 BCE – 2532 BCE",
+        envelope: "[-2557-01-01T00:00:00Z, -2530-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2557..-2531 inclusive (full last year 2532 BCE included); end bound = Jan 1 of astronomical year -2530 (= Jan 1, 2531 BCE)",
+        envelope_days: 9862,
+        start: {
+          tick_position_N: -9684188928e3,
+          tick_index_N_plus_1: -9684188927999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2690052,
+            grains: 14400,
+            ticks: 0
+          },
+          abs_mixed: "−(2,690,052 cowries + 14,400 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2690053,
+            grains: 15600,
+            ticks: 0
+          },
+          total_grains_exact: "-80701574400",
+          total_cowries_exact: "-67251312/25",
+          total_cowries_decimal: "-2,690,052.480000",
+          duration_to_snapshot_ticks: 17358310396800,
+          duration_mixed: "4,821,752 cowries + 26,640 grains + 0 ticks",
+          duration_full_cowries: 4821752,
+          duration_cowrie_remainder_ticks: 3196800,
+          duration_grains_exact: "144652586640",
+          duration_days_exact: "602719111/360",
+          duration_days_decimal: "1,674,219.752777…",
+          duration_julian_years_365_25_decimal: "4,583.7638…"
+        },
+        end_exclusive: {
+          tick_position_N: -9581939712e3,
+          tick_index_N_plus_1: -9581939711999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2661649,
+            grains: 27600,
+            ticks: 0
+          },
+          abs_mixed: "−(2,661,649 cowries + 27,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2661650,
+            grains: 2400,
+            ticks: 0
+          },
+          total_grains_exact: "-79849497600",
+          total_cowries_exact: "-66541248/25",
+          total_cowries_decimal: "-2,661,649.920000",
+          duration_to_snapshot_ticks: 17256061180800,
+          duration_mixed: "4,793,350 cowries + 9,840 grains + 0 ticks",
+          duration_full_cowries: 4793350,
+          duration_cowrie_remainder_ticks: 1180800,
+          duration_grains_exact: "143800509840",
+          duration_days_exact: "599168791/360",
+          duration_days_decimal: "1,664,357.752777…",
+          duration_julian_years_365_25_decimal: "4,556.7631…"
+        },
+        duration_to_snapshot_range_ticks: [
+          17256061180800,
+          17358310396800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,664,357.752777…",
+          "1,674,219.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "menkaure_reign_mota",
+        theme: "giza",
+        kind: "ruler reign (approx.), alternative chronology",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Menkaure reign · MoTA chronology",
+        approx: "c.",
+        src: "mota_workers",
+        url: "https://egymonuments.gov.eg/en/monuments/workers-town-and-cemetery/",
+        note: "",
+        source_years: "c. 2532 BCE – 2503 BCE",
+        envelope: "[-2531-01-01T00:00:00Z, -2501-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2531..-2502 inclusive (full last year 2503 BCE included); end bound = Jan 1 of astronomical year -2501 (= Jan 1, 2502 BCE)",
+        envelope_days: 10957,
+        start: {
+          tick_position_N: -9585724032e3,
+          tick_index_N_plus_1: -9585724031999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2662701,
+            grains: 3600,
+            ticks: 0
+          },
+          abs_mixed: "−(2,662,701 cowries + 3,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2662702,
+            grains: 26400,
+            ticks: 0
+          },
+          total_grains_exact: "-79881033600",
+          total_cowries_exact: "-66567528/25",
+          total_cowries_decimal: "-2,662,701.120000",
+          duration_to_snapshot_ticks: 17259845500800,
+          duration_mixed: "4,794,401 cowries + 15,840 grains + 0 ticks",
+          duration_full_cowries: 4794401,
+          duration_cowrie_remainder_ticks: 1900800,
+          duration_grains_exact: "143832045840",
+          duration_days_exact: "599300191/360",
+          duration_days_decimal: "1,664,722.752777…",
+          duration_julian_years_365_25_decimal: "4,557.7624…"
+        },
+        end_exclusive: {
+          tick_position_N: -9472121856e3,
+          tick_index_N_plus_1: -9472121855999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2631144,
+            grains: 28800,
+            ticks: 0
+          },
+          abs_mixed: "−(2,631,144 cowries + 28,800 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2631145,
+            grains: 1200,
+            ticks: 0
+          },
+          total_grains_exact: "-78934348800",
+          total_cowries_exact: "-65778624/25",
+          total_cowries_decimal: "-2,631,144.960000",
+          duration_to_snapshot_ticks: 17146243324800,
+          duration_mixed: "4,762,845 cowries + 11,040 grains + 0 ticks",
+          duration_full_cowries: 4762845,
+          duration_cowrie_remainder_ticks: 1324800,
+          duration_grains_exact: "142885361040",
+          duration_days_exact: "595355671/360",
+          duration_days_decimal: "1,653,765.752777…",
+          duration_julian_years_365_25_decimal: "4,527.7638…"
+        },
+        duration_to_snapshot_range_ticks: [
+          17146243324800,
+          17259845500800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,653,765.752777…",
+          "1,664,722.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "dynasty5_unas",
+        theme: "saqqara (Pyramid Texts)",
+        kind: "dynasty (approx.)",
+        role: "primary",
+        precision: "year as printed by source (still a scholarly estimate)",
+        label: "Dynasty 5 (Unas is its last king; first Pyramid Texts)",
+        approx: "",
+        src: "ucl_unas",
+        url: "https://www.ucl.ac.uk/museums-static/digitalegypt/chronology/kingunas.html",
+        note: "UCL gives the dynasty range, not Unas's reign; Unas's reign years are pending",
+        source_years: "2450 BCE – 2300 BCE",
+        envelope: "[-2449-01-01T00:00:00Z, -2298-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2449..-2299 inclusive (full last year 2300 BCE included); end bound = Jan 1 of astronomical year -2298 (= Jan 1, 2299 BCE)",
+        envelope_days: 55152,
+        start: {
+          tick_position_N: -92752128e5,
+          tick_index_N_plus_1: -9275212799999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2576448,
+            grains: 0,
+            ticks: 0
+          },
+          abs_mixed: "−(2,576,448 cowries + 0 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2576448,
+            grains: 0,
+            ticks: 0
+          },
+          total_grains_exact: "-77293440000",
+          total_cowries_exact: "-2576448",
+          total_cowries_decimal: "-2,576,448.000000",
+          duration_to_snapshot_ticks: 16949334268800,
+          duration_mixed: "4,708,148 cowries + 12,240 grains + 0 ticks",
+          duration_full_cowries: 4708148,
+          duration_cowrie_remainder_ticks: 1468800,
+          duration_grains_exact: "141244452240",
+          duration_days_exact: "588518551/360",
+          duration_days_decimal: "1,634,773.752777…",
+          duration_julian_years_365_25_decimal: "4,475.7666…"
+        },
+        end_exclusive: {
+          tick_position_N: -8703396864e3,
+          tick_index_N_plus_1: -8703396863999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2417610,
+            grains: 7200,
+            ticks: 0
+          },
+          abs_mixed: "−(2,417,610 cowries + 7,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2417611,
+            grains: 22800,
+            ticks: 0
+          },
+          total_grains_exact: "-72528307200",
+          total_cowries_exact: "-60440256/25",
+          total_cowries_decimal: "-2,417,610.240000",
+          duration_to_snapshot_ticks: 16377518332800,
+          duration_mixed: "4,549,310 cowries + 19,440 grains + 0 ticks",
+          duration_full_cowries: 4549310,
+          duration_cowrie_remainder_ticks: 2332800,
+          duration_grains_exact: "136479319440",
+          duration_days_exact: "568663831/360",
+          duration_days_decimal: "1,579,621.752777…",
+          duration_julian_years_365_25_decimal: "4,324.7686…"
+        },
+        duration_to_snapshot_range_ticks: [
+          16377518332800,
+          16949334268800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,579,621.752777…",
+          "1,634,773.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "civil_calendar_attested",
+        theme: "nile",
+        kind: "calendar attestation (terminus, 'by at least')",
+        role: "primary",
+        precision: 'terminus ("by"), one-year envelope',
+        label: "Civil calendar in use 'by at least the middle of the Old Kingdom (ca. 2450 B.C.)'",
+        approx: "ca., by at least",
+        src: "met_time",
+        url: "https://www.metmuseum.org/essays/telling-time-in-ancient-egypt",
+        note: "A one-year envelope around an approximate 'by at least' date. It is NOT an invention date; the calendar was 'quite possibly several centuries earlier'",
+        source_years: "ca., by at least 2450 BCE – 2450 BCE",
+        envelope: "[-2449-01-01T00:00:00Z, -2448-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -2449..-2449 inclusive (full last year 2450 BCE included); end bound = Jan 1 of astronomical year -2448 (= Jan 1, 2449 BCE)",
+        envelope_days: 365,
+        start: {
+          tick_position_N: -92752128e5,
+          tick_index_N_plus_1: -9275212799999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2576448,
+            grains: 0,
+            ticks: 0
+          },
+          abs_mixed: "−(2,576,448 cowries + 0 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2576448,
+            grains: 0,
+            ticks: 0
+          },
+          total_grains_exact: "-77293440000",
+          total_cowries_exact: "-2576448",
+          total_cowries_decimal: "-2,576,448.000000",
+          duration_to_snapshot_ticks: 16949334268800,
+          duration_mixed: "4,708,148 cowries + 12,240 grains + 0 ticks",
+          duration_full_cowries: 4708148,
+          duration_cowrie_remainder_ticks: 1468800,
+          duration_grains_exact: "141244452240",
+          duration_days_exact: "588518551/360",
+          duration_days_decimal: "1,634,773.752777…",
+          duration_julian_years_365_25_decimal: "4,475.7666…"
+        },
+        end_exclusive: {
+          tick_position_N: -927142848e4,
+          tick_index_N_plus_1: -9271428479999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 2575396,
+            grains: 24e3,
+            ticks: 0
+          },
+          abs_mixed: "−(2,575,396 cowries + 24,000 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -2575397,
+            grains: 6e3,
+            ticks: 0
+          },
+          total_grains_exact: "-77261904000",
+          total_cowries_exact: "-12876984/5",
+          total_cowries_decimal: "-2,575,396.800000",
+          duration_to_snapshot_ticks: 16945549948800,
+          duration_mixed: "4,707,097 cowries + 6,240 grains + 0 ticks",
+          duration_full_cowries: 4707097,
+          duration_cowrie_remainder_ticks: 748800,
+          duration_grains_exact: "141212916240",
+          duration_days_exact: "588387151/360",
+          duration_days_decimal: "1,634,408.752777…",
+          duration_julian_years_365_25_decimal: "4,474.7672…"
+        },
+        duration_to_snapshot_range_ticks: [
+          16945549948800,
+          16949334268800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,634,408.752777…",
+          "1,634,773.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "napatan_period",
+        theme: "kurru+nuri",
+        kind: "culture period",
+        role: "primary",
+        precision: "year as printed by source (still a scholarly estimate)",
+        label: "Napatan culture, second kingdom of Kush",
+        approx: "",
+        src: "unesco_napata",
+        url: "https://whc.unesco.org/en/list/1073/",
+        note: "UNESCO's period labels",
+        source_years: "900 BCE – 270 BCE",
+        envelope: "[-0899-01-01T00:00:00Z, -0268-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -899..-269 inclusive (full last year 270 BCE included); end bound = Jan 1 of astronomical year -268 (= Jan 1, 269 BCE)",
+        envelope_days: 230468,
+        start: {
+          tick_position_N: -3405618432e3,
+          tick_index_N_plus_1: -3405618431999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 946005,
+            grains: 3600,
+            ticks: 0
+          },
+          abs_mixed: "−(946,005 cowries + 3,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -946006,
+            grains: 26400,
+            ticks: 0
+          },
+          total_grains_exact: "-28380153600",
+          total_cowries_exact: "-23650128/25",
+          total_cowries_decimal: "-946,005.120000",
+          duration_to_snapshot_ticks: 11079739900800,
+          duration_mixed: "3,077,705 cowries + 15,840 grains + 0 ticks",
+          duration_full_cowries: 3077705,
+          duration_cowrie_remainder_ticks: 1900800,
+          duration_grains_exact: "92331165840",
+          duration_days_exact: "384713191/360",
+          duration_days_decimal: "1,068,647.752777…",
+          duration_julian_years_365_25_decimal: "2,925.7980…"
+        },
+        end_exclusive: {
+          tick_position_N: -1016126208e3,
+          tick_index_N_plus_1: -1016126207999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 282257,
+            grains: 8400,
+            ticks: 0
+          },
+          abs_mixed: "−(282,257 cowries + 8,400 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -282258,
+            grains: 21600,
+            ticks: 0
+          },
+          total_grains_exact: "-8467718400",
+          total_cowries_exact: "-7056432/25",
+          total_cowries_decimal: "-282,257.280000",
+          duration_to_snapshot_ticks: 8690247676800,
+          duration_mixed: "2,413,957 cowries + 20,640 grains + 0 ticks",
+          duration_full_cowries: 2413957,
+          duration_cowrie_remainder_ticks: 2476800,
+          duration_grains_exact: "72418730640",
+          duration_days_exact: "301744711/360",
+          duration_days_decimal: "838,179.752777…",
+          duration_julian_years_365_25_decimal: "2,294.8110…"
+        },
+        duration_to_snapshot_range_ticks: [
+          8690247676800,
+          11079739900800
+        ],
+        duration_to_snapshot_range_days: [
+          "838,179.752777…",
+          "1,068,647.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "kurru_royal_burials",
+        theme: "kurru",
+        kind: "site use",
+        role: "pending",
+        precision: "pending",
+        label: "El-Kurru royal cemetery start",
+        src: "ikap",
+        url: "https://ikap.us/excavations/history-of-excavations/",
+        note: "PENDING. IKAP says the absolute dating is debated (11th c. vs 9th c. BC). No envelope computed.",
+        status: "PENDING: no sourced year range; nothing computed"
+      },
+      {
+        id: "kurru_proxy_napatan",
+        theme: "kurru",
+        kind: "PROXY (broad culture period, not a site date)",
+        role: "proxy",
+        precision: "proxy: broad culture period",
+        label: "El-Kurru proxy = the whole Napatan period (UNESCO)",
+        approx: "proxy",
+        src: "unesco_napata",
+        url: "https://whc.unesco.org/en/list/1073/",
+        note: "Kurru is one Napatan site, so this is not an El-Kurru epoch. Its own start is pending (IKAP: debated)",
+        source_years: "proxy 900 BCE – 270 BCE",
+        envelope: "[-0899-01-01T00:00:00Z, -0268-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -899..-269 inclusive (full last year 270 BCE included); end bound = Jan 1 of astronomical year -268 (= Jan 1, 269 BCE)",
+        envelope_days: 230468,
+        start: {
+          tick_position_N: -3405618432e3,
+          tick_index_N_plus_1: -3405618431999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 946005,
+            grains: 3600,
+            ticks: 0
+          },
+          abs_mixed: "−(946,005 cowries + 3,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -946006,
+            grains: 26400,
+            ticks: 0
+          },
+          total_grains_exact: "-28380153600",
+          total_cowries_exact: "-23650128/25",
+          total_cowries_decimal: "-946,005.120000",
+          duration_to_snapshot_ticks: 11079739900800,
+          duration_mixed: "3,077,705 cowries + 15,840 grains + 0 ticks",
+          duration_full_cowries: 3077705,
+          duration_cowrie_remainder_ticks: 1900800,
+          duration_grains_exact: "92331165840",
+          duration_days_exact: "384713191/360",
+          duration_days_decimal: "1,068,647.752777…",
+          duration_julian_years_365_25_decimal: "2,925.7980…"
+        },
+        end_exclusive: {
+          tick_position_N: -1016126208e3,
+          tick_index_N_plus_1: -1016126207999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 282257,
+            grains: 8400,
+            ticks: 0
+          },
+          abs_mixed: "−(282,257 cowries + 8,400 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -282258,
+            grains: 21600,
+            ticks: 0
+          },
+          total_grains_exact: "-8467718400",
+          total_cowries_exact: "-7056432/25",
+          total_cowries_decimal: "-282,257.280000",
+          duration_to_snapshot_ticks: 8690247676800,
+          duration_mixed: "2,413,957 cowries + 20,640 grains + 0 ticks",
+          duration_full_cowries: 2413957,
+          duration_cowrie_remainder_ticks: 2476800,
+          duration_grains_exact: "72418730640",
+          duration_days_exact: "301744711/360",
+          duration_days_decimal: "838,179.752777…",
+          duration_julian_years_365_25_decimal: "2,294.8110…"
+        },
+        duration_to_snapshot_range_ticks: [
+          8690247676800,
+          11079739900800
+        ],
+        duration_to_snapshot_range_days: [
+          "838,179.752777…",
+          "1,068,647.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "kushite_rule_egypt_by",
+        theme: "kurru",
+        kind: "event terminus ('by')",
+        role: "primary",
+        precision: 'terminus ("by"), one-year envelope',
+        label: "Kushite kings end Egypt's fragmentation by 715 BCE (25th Dynasty)",
+        approx: "by",
+        src: "bm_meroitic",
+        url: "https://smarthistory.org/meroitic-period-kingdom-kush/",
+        note: "Individual reigns of Piye, Shabaqo, Shebitqo and Tanutamani are pending",
+        source_years: "by 715 BCE – 715 BCE",
+        envelope: "[-0714-01-01T00:00:00Z, -0713-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -714..-714 inclusive (full last year 715 BCE included); end bound = Jan 1 of astronomical year -713 (= Jan 1, 714 BCE)",
+        envelope_days: 365,
+        start: {
+          tick_position_N: -2705042304e3,
+          tick_index_N_plus_1: -2705042303999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 751400,
+            grains: 19200,
+            ticks: 0
+          },
+          abs_mixed: "−(751,400 cowries + 19,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -751401,
+            grains: 10800,
+            ticks: 0
+          },
+          total_grains_exact: "-22542019200",
+          total_cowries_exact: "-18785016/25",
+          total_cowries_decimal: "-751,400.640000",
+          duration_to_snapshot_ticks: 10379163772800,
+          duration_mixed: "2,883,101 cowries + 1,440 grains + 0 ticks",
+          duration_full_cowries: 2883101,
+          duration_cowrie_remainder_ticks: 172800,
+          duration_grains_exact: "86493031440",
+          duration_days_exact: "360387631/360",
+          duration_days_decimal: "1,001,076.752777…",
+          duration_julian_years_365_25_decimal: "2,740.7987…"
+        },
+        end_exclusive: {
+          tick_position_N: -2701257984e3,
+          tick_index_N_plus_1: -2701257983999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 750349,
+            grains: 13200,
+            ticks: 0
+          },
+          abs_mixed: "−(750,349 cowries + 13,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -750350,
+            grains: 16800,
+            ticks: 0
+          },
+          total_grains_exact: "-22510483200",
+          total_cowries_exact: "-18758736/25",
+          total_cowries_decimal: "-750,349.440000",
+          duration_to_snapshot_ticks: 10375379452800,
+          duration_mixed: "2,882,049 cowries + 25,440 grains + 0 ticks",
+          duration_full_cowries: 2882049,
+          duration_cowrie_remainder_ticks: 3052800,
+          duration_grains_exact: "86461495440",
+          duration_days_exact: "360256231/360",
+          duration_days_decimal: "1,000,711.752777…",
+          duration_julian_years_365_25_decimal: "2,739.7994…"
+        },
+        duration_to_snapshot_range_ticks: [
+          10375379452800,
+          10379163772800
+        ],
+        duration_to_snapshot_range_days: [
+          "1,000,711.752777…",
+          "1,001,076.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "taharqa_reign",
+        theme: "nuri",
+        kind: "ruler reign",
+        role: "primary",
+        precision: "year as printed by source (still a scholarly estimate)",
+        label: "Taharqa reign (his tomb is Nuri Pyramid 1; construction dates not sourced)",
+        approx: "",
+        src: "mfa_taharqa",
+        url: "https://collections.mfa.org/objects/142297",
+        note: "Reign, not the construction dates of Nuri Pyramid 1",
+        source_years: "690 BCE – 664 BCE",
+        envelope: "[-0689-01-01T00:00:00Z, -0662-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -689..-663 inclusive (full last year 664 BCE included); end bound = Jan 1 of astronomical year -662 (= Jan 1, 663 BCE)",
+        envelope_days: 9862,
+        start: {
+          tick_position_N: -2610382464e3,
+          tick_index_N_plus_1: -2610382463999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 725106,
+            grains: 7200,
+            ticks: 0
+          },
+          abs_mixed: "−(725,106 cowries + 7,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -725107,
+            grains: 22800,
+            ticks: 0
+          },
+          total_grains_exact: "-21753187200",
+          total_cowries_exact: "-18127656/25",
+          total_cowries_decimal: "-725,106.240000",
+          duration_to_snapshot_ticks: 10284503932800,
+          duration_mixed: "2,856,806 cowries + 19,440 grains + 0 ticks",
+          duration_full_cowries: 2856806,
+          duration_cowrie_remainder_ticks: 2332800,
+          duration_grains_exact: "85704199440",
+          duration_days_exact: "357100831/360",
+          duration_days_decimal: "991,946.752777…",
+          duration_julian_years_365_25_decimal: "2,715.8021…"
+        },
+        end_exclusive: {
+          tick_position_N: -2508133248e3,
+          tick_index_N_plus_1: -2508133247999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 696703,
+            grains: 20400,
+            ticks: 0
+          },
+          abs_mixed: "−(696,703 cowries + 20,400 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -696704,
+            grains: 9600,
+            ticks: 0
+          },
+          total_grains_exact: "-20901110400",
+          total_cowries_exact: "-17417592/25",
+          total_cowries_decimal: "-696,703.680000",
+          duration_to_snapshot_ticks: 10182254716800,
+          duration_mixed: "2,828,404 cowries + 2,640 grains + 0 ticks",
+          duration_full_cowries: 2828404,
+          duration_cowrie_remainder_ticks: 316800,
+          duration_grains_exact: "84852122640",
+          duration_days_exact: "353550511/360",
+          duration_days_decimal: "982,084.752777…",
+          duration_julian_years_365_25_decimal: "2,688.8015…"
+        },
+        duration_to_snapshot_range_ticks: [
+          10182254716800,
+          10284503932800
+        ],
+        duration_to_snapshot_range_days: [
+          "982,084.752777…",
+          "991,946.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "nuri_pyramid_use_secondary",
+        theme: "nuri",
+        kind: "site use (approx.), SECONDARY source",
+        role: "secondary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Nuri pyramids, oldest (Taharqa) to Nastasen",
+        approx: "circa / around",
+        src: "wikipedia_nuri",
+        url: "https://en.m.wikipedia.org/wiki/Nuri_pyramid",
+        note: "Wikipedia only (search result). Not on the cards. Replace with a primary or museum source before display.",
+        source_years: "circa / around 670 BCE – 310 BCE",
+        envelope: "[-0669-01-01T00:00:00Z, -0308-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -669..-309 inclusive (full last year 310 BCE included); end bound = Jan 1 of astronomical year -308 (= Jan 1, 309 BCE)",
+        envelope_days: 131853,
+        start: {
+          tick_position_N: -2534644224e3,
+          tick_index_N_plus_1: -2534644223999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 704067,
+            grains: 25200,
+            ticks: 0
+          },
+          abs_mixed: "−(704,067 cowries + 25,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -704068,
+            grains: 4800,
+            ticks: 0
+          },
+          total_grains_exact: "-21122035200",
+          total_cowries_exact: "-17601696/25",
+          total_cowries_decimal: "-704,067.840000",
+          duration_to_snapshot_ticks: 10208765692800,
+          duration_mixed: "2,835,768 cowries + 7,440 grains + 0 ticks",
+          duration_full_cowries: 2835768,
+          duration_cowrie_remainder_ticks: 892800,
+          duration_grains_exact: "85073047440",
+          duration_days_exact: "354471031/360",
+          duration_days_decimal: "984,641.752777…",
+          duration_julian_years_365_25_decimal: "2,695.8021…"
+        },
+        end_exclusive: {
+          tick_position_N: -116759232e4,
+          tick_index_N_plus_1: -1167592319999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 324331,
+            grains: 6e3,
+            ticks: 0
+          },
+          abs_mixed: "−(324,331 cowries + 6,000 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -324332,
+            grains: 24e3,
+            ticks: 0
+          },
+          total_grains_exact: "-9729936000",
+          total_cowries_exact: "-1621656/5",
+          total_cowries_decimal: "-324,331.200000",
+          duration_to_snapshot_ticks: 8841713788800,
+          duration_mixed: "2,456,031 cowries + 18,240 grains + 0 ticks",
+          duration_full_cowries: 2456031,
+          duration_cowrie_remainder_ticks: 2188800,
+          duration_grains_exact: "73680948240",
+          duration_days_exact: "307003951/360",
+          duration_days_decimal: "852,788.752777…",
+          duration_julian_years_365_25_decimal: "2,334.8083…"
+        },
+        duration_to_snapshot_range_ticks: [
+          8841713788800,
+          10208765692800
+        ],
+        duration_to_snapshot_range_days: [
+          "852,788.752777…",
+          "984,641.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "meroitic_period",
+        theme: "meroe",
+        kind: "culture period",
+        role: "primary",
+        precision: "year as printed by source (still a scholarly estimate)",
+        label: "Meroitic culture (UNESCO)",
+        approx: "",
+        src: "unesco_napata",
+        url: "https://whc.unesco.org/en/list/1073/",
+        note: "The British Museum gives about 300 BCE – 350 CE",
+        source_years: "270 BCE – 350 CE",
+        envelope: "[-0269-01-01T00:00:00Z, +0351-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -269..350 inclusive (full last year 350 CE included); end bound = Jan 1 of astronomical year 351 (= Jan 1, 351 CE)",
+        envelope_days: 226450,
+        start: {
+          tick_position_N: -1019910528e3,
+          tick_index_N_plus_1: -1019910527999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 283308,
+            grains: 14400,
+            ticks: 0
+          },
+          abs_mixed: "−(283,308 cowries + 14,400 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -283309,
+            grains: 15600,
+            ticks: 0
+          },
+          total_grains_exact: "-8499254400",
+          total_cowries_exact: "-7082712/25",
+          total_cowries_decimal: "-283,308.480000",
+          duration_to_snapshot_ticks: 8694031996800,
+          duration_mixed: "2,415,008 cowries + 26,640 grains + 0 ticks",
+          duration_full_cowries: 2415008,
+          duration_cowrie_remainder_ticks: 3196800,
+          duration_grains_exact: "72450266640",
+          duration_days_exact: "301876111/360",
+          duration_days_decimal: "838,544.752777…",
+          duration_julian_years_365_25_decimal: "2,295.8104…"
+        },
+        end_exclusive: {
+          tick_position_N: 1327923072e3,
+          tick_index_N_plus_1: 1327923072001,
+          sign: 1,
+          abs_decomposition: {
+            cowries: 368867,
+            grains: 15600,
+            ticks: 0
+          },
+          abs_mixed: "(368,867 cowries + 15,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: 368867,
+            grains: 15600,
+            ticks: 0
+          },
+          total_grains_exact: "11066025600",
+          total_cowries_exact: "9221688/25",
+          total_cowries_decimal: "368,867.520000",
+          duration_to_snapshot_ticks: 6346198396800,
+          duration_mixed: "1,762,832 cowries + 26,640 grains + 0 ticks",
+          duration_full_cowries: 1762832,
+          duration_cowrie_remainder_ticks: 3196800,
+          duration_grains_exact: "52884986640",
+          duration_days_exact: "220354111/360",
+          duration_days_decimal: "612,094.752777…",
+          duration_julian_years_365_25_decimal: "1,675.8241…"
+        },
+        duration_to_snapshot_range_ticks: [
+          6346198396800,
+          8694031996800
+        ],
+        duration_to_snapshot_range_days: [
+          "612,094.752777…",
+          "838,544.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "meroitic_period_bm",
+        theme: "meroe",
+        kind: "culture period (approx.)",
+        role: "primary",
+        precision: "approximate year (chronology-dependent)",
+        label: "Meroitic period (British Museum)",
+        approx: "about",
+        src: "bm_meroitic",
+        url: "https://smarthistory.org/meroitic-period-kingdom-kush/",
+        note: "",
+        source_years: "about 300 BCE – 350 CE",
+        envelope: "[-0299-01-01T00:00:00Z, +0351-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -299..350 inclusive (full last year 350 CE included); end bound = Jan 1 of astronomical year 351 (= Jan 1, 351 CE)",
+        envelope_days: 237407,
+        start: {
+          tick_position_N: -1133512704e3,
+          tick_index_N_plus_1: -1133512703999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 314864,
+            grains: 19200,
+            ticks: 0
+          },
+          abs_mixed: "−(314,864 cowries + 19,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -314865,
+            grains: 10800,
+            ticks: 0
+          },
+          total_grains_exact: "-9445939200",
+          total_cowries_exact: "-7871616/25",
+          total_cowries_decimal: "-314,864.640000",
+          duration_to_snapshot_ticks: 8807634172800,
+          duration_mixed: "2,446,565 cowries + 1,440 grains + 0 ticks",
+          duration_full_cowries: 2446565,
+          duration_cowrie_remainder_ticks: 172800,
+          duration_grains_exact: "73396951440",
+          duration_days_exact: "305820631/360",
+          duration_days_decimal: "849,501.752777…",
+          duration_julian_years_365_25_decimal: "2,325.8090…"
+        },
+        end_exclusive: {
+          tick_position_N: 1327923072e3,
+          tick_index_N_plus_1: 1327923072001,
+          sign: 1,
+          abs_decomposition: {
+            cowries: 368867,
+            grains: 15600,
+            ticks: 0
+          },
+          abs_mixed: "(368,867 cowries + 15,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: 368867,
+            grains: 15600,
+            ticks: 0
+          },
+          total_grains_exact: "11066025600",
+          total_cowries_exact: "9221688/25",
+          total_cowries_decimal: "368,867.520000",
+          duration_to_snapshot_ticks: 6346198396800,
+          duration_mixed: "1,762,832 cowries + 26,640 grains + 0 ticks",
+          duration_full_cowries: 1762832,
+          duration_cowrie_remainder_ticks: 3196800,
+          duration_grains_exact: "52884986640",
+          duration_days_exact: "220354111/360",
+          duration_days_decimal: "612,094.752777…",
+          duration_julian_years_365_25_decimal: "1,675.8241…"
+        },
+        duration_to_snapshot_range_ticks: [
+          6346198396800,
+          8807634172800
+        ],
+        duration_to_snapshot_range_days: [
+          "612,094.752777…",
+          "849,501.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "meroe_royal_burials_from",
+        theme: "meroe",
+        kind: "site use (century label)",
+        role: "primary",
+        precision: "century label → full-century envelope",
+        label: "Most royal burials at Meroe 'from the 3rd century BCE onwards'",
+        approx: "century",
+        src: "unesco_meroe",
+        url: "https://whc.unesco.org/en/list/1336/",
+        note: "Envelope = the whole 3rd century BCE (300–201 BCE) as the possible start window, not a span of use",
+        source_years: "century 300 BCE – 201 BCE",
+        envelope: "[-0299-01-01T00:00:00Z, -0199-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -299..-200 inclusive (full last year 201 BCE included); end bound = Jan 1 of astronomical year -199 (= Jan 1, 200 BCE)",
+        envelope_days: 36524,
+        start: {
+          tick_position_N: -1133512704e3,
+          tick_index_N_plus_1: -1133512703999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 314864,
+            grains: 19200,
+            ticks: 0
+          },
+          abs_mixed: "−(314,864 cowries + 19,200 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -314865,
+            grains: 10800,
+            ticks: 0
+          },
+          total_grains_exact: "-9445939200",
+          total_cowries_exact: "-7871616/25",
+          total_cowries_decimal: "-314,864.640000",
+          duration_to_snapshot_ticks: 8807634172800,
+          duration_mixed: "2,446,565 cowries + 1,440 grains + 0 ticks",
+          duration_full_cowries: 2446565,
+          duration_cowrie_remainder_ticks: 172800,
+          duration_grains_exact: "73396951440",
+          duration_days_exact: "305820631/360",
+          duration_days_decimal: "849,501.752777…",
+          duration_julian_years_365_25_decimal: "2,325.8090…"
+        },
+        end_exclusive: {
+          tick_position_N: -754831872e3,
+          tick_index_N_plus_1: -754831871999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 209675,
+            grains: 15600,
+            ticks: 0
+          },
+          abs_mixed: "−(209,675 cowries + 15,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -209676,
+            grains: 14400,
+            ticks: 0
+          },
+          total_grains_exact: "-6290265600",
+          total_cowries_exact: "-5241888/25",
+          total_cowries_decimal: "-209,675.520000",
+          duration_to_snapshot_ticks: 8428953340800,
+          duration_mixed: "2,341,375 cowries + 27,840 grains + 0 ticks",
+          duration_full_cowries: 2341375,
+          duration_cowrie_remainder_ticks: 3340800,
+          duration_grains_exact: "70241277840",
+          duration_days_exact: "292671991/360",
+          duration_days_decimal: "812,977.752777…",
+          duration_julian_years_365_25_decimal: "2,225.8117…"
+        },
+        duration_to_snapshot_range_ticks: [
+          8428953340800,
+          8807634172800
+        ],
+        duration_to_snapshot_range_days: [
+          "812,977.752777…",
+          "849,501.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      },
+      {
+        id: "kush_kingdom_major_power",
+        theme: "meroe",
+        kind: "polity (century labels)",
+        role: "primary",
+        precision: "century label → full-century envelope",
+        label: "Kingdom of Kush a major power, 8th c. BCE – 4th c. CE",
+        approx: "century",
+        src: "unesco_meroe",
+        url: "https://whc.unesco.org/en/list/1336/",
+        note: "Century labels widened to full centuries (800 BCE … 400 CE)",
+        source_years: "century 800 BCE – 400 CE",
+        envelope: "[-0799-01-01T00:00:00Z, +0401-01-01T00:00:00Z)",
+        envelope_note: "astronomical years -799..400 inclusive (full last year 400 CE included); end bound = Jan 1 of astronomical year 401 (= Jan 1, 401 CE)",
+        envelope_days: 438291,
+        start: {
+          tick_position_N: -3026927232e3,
+          tick_index_N_plus_1: -3026927231999,
+          sign: -1,
+          abs_decomposition: {
+            cowries: 840813,
+            grains: 3600,
+            ticks: 0
+          },
+          abs_mixed: "−(840,813 cowries + 3,600 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: -840814,
+            grains: 26400,
+            ticks: 0
+          },
+          total_grains_exact: "-25224393600",
+          total_cowries_exact: "-21020328/25",
+          total_cowries_decimal: "-840,813.120000",
+          duration_to_snapshot_ticks: 10701048700800,
+          duration_mixed: "2,972,513 cowries + 15,840 grains + 0 ticks",
+          duration_full_cowries: 2972513,
+          duration_cowrie_remainder_ticks: 1900800,
+          duration_grains_exact: "89175405840",
+          duration_days_exact: "371564191/360",
+          duration_days_decimal: "1,032,122.752777…",
+          duration_julian_years_365_25_decimal: "2,825.7980…"
+        },
+        end_exclusive: {
+          tick_position_N: 1517273856e3,
+          tick_index_N_plus_1: 1517273856001,
+          sign: 1,
+          abs_decomposition: {
+            cowries: 421464,
+            grains: 28800,
+            ticks: 0
+          },
+          abs_mixed: "(421,464 cowries + 28,800 grains + 0 ticks)",
+          euclidean: {
+            cowrie_index: 421464,
+            grains: 28800,
+            ticks: 0
+          },
+          total_grains_exact: "12643948800",
+          total_cowries_exact: "10536624/25",
+          total_cowries_decimal: "421,464.960000",
+          duration_to_snapshot_ticks: 6156847612800,
+          duration_mixed: "1,710,235 cowries + 13,440 grains + 0 ticks",
+          duration_full_cowries: 1710235,
+          duration_cowrie_remainder_ticks: 1612800,
+          duration_grains_exact: "51307063440",
+          duration_days_exact: "213779431/360",
+          duration_days_decimal: "593,831.752777…",
+          duration_julian_years_365_25_decimal: "1,625.8227…"
+        },
+        duration_to_snapshot_range_ticks: [
+          6156847612800,
+          10701048700800
+        ],
+        duration_to_snapshot_range_days: [
+          "593,831.752777…",
+          "1,032,122.752777…"
+        ],
+        uncertainty: "Source years are approximate and chronology-dependent. The arithmetic is exact only for the stated modern anchors. Ancient sources count in Julian/Egyptian/regnal terms; proleptic Gregorian Jan 1 is a modern convention."
+      }
+    ]
+  };
+
+  // src/reconcile.mjs
+  function asBig(value) {
+    if (typeof value === "bigint") return value;
+    if (typeof value === "number") {
+      if (!Number.isSafeInteger(value)) throw new Error(`unsafe integer in fixture: ${value}`);
+      return BigInt(value);
+    }
+    if (typeof value === "string" && /^-?\d+$/.test(value)) return BigInt(value);
+    return null;
+  }
+  function same(ours, theirs) {
+    if (typeof ours === "bigint" || typeof theirs === "number" || typeof theirs === "bigint") {
+      const a = asBig(ours);
+      const b = asBig(theirs);
+      if (a !== null && b !== null) return a === b;
+    }
+    return ours === theirs;
+  }
+  var POINT_FIELDS = [
+    "tick_position_N",
+    "tick_index_N_plus_1",
+    "sign",
+    "abs_mixed",
+    "total_grains_exact",
+    "total_cowries_exact",
+    "total_cowries_decimal",
+    "duration_to_snapshot_ticks",
+    "duration_mixed",
+    "duration_full_cowries",
+    "duration_cowrie_remainder_ticks",
+    "duration_grains_exact",
+    "duration_days_exact",
+    "duration_days_decimal",
+    "duration_julian_years_365_25_decimal"
+  ];
+  function comparePoint(id, side, ours, theirs, differences) {
+    for (const field of POINT_FIELDS) {
+      if (!same(ours[field], theirs[field])) {
+        differences.push({ id, side, field, ours: stringify(ours[field]), theirs: stringify(theirs[field]) });
+      }
+    }
+    for (const field of ["cowries", "grains", "ticks"]) {
+      if (!same(ours.abs_decomposition[field], theirs.abs_decomposition[field])) {
+        differences.push({
+          id,
+          side,
+          field: `abs_decomposition.${field}`,
+          ours: stringify(ours.abs_decomposition[field]),
+          theirs: stringify(theirs.abs_decomposition[field])
+        });
+      }
+    }
+    for (const field of ["cowrie_index", "grains", "ticks"]) {
+      if (!same(ours.euclidean[field], theirs.euclidean[field])) {
+        differences.push({
+          id,
+          side,
+          field: `euclidean.${field}`,
+          ours: stringify(ours.euclidean[field]),
+          theirs: stringify(theirs.euclidean[field])
+        });
+      }
+    }
+  }
+  function stringify(value) {
+    return typeof value === "bigint" ? value.toString() : String(value);
+  }
+  function sourceYears(range) {
+    const prefix = range.approx ? `${range.approx} ` : "";
+    return `${prefix}${range.start[0]} ${range.start[1]} – ${range.end[0]} ${range.end[1]}`;
+  }
+  function envelopeNote(env, endYear, endEra) {
+    const yb = env.endFenceAstronomicalYear;
+    const fenceLabel = yb <= 0n ? `${(1n - yb).toString()} BCE` : `${yb.toString()} CE`;
+    return `astronomical years ${env.firstAstronomicalYear}..${env.lastAstronomicalYearInclusive} inclusive (full last year ${endYear} ${endEra} included); end bound = Jan 1 of astronomical year ${yb} (= Jan 1, ${fenceLabel})`;
+  }
+  function evaluateRange(range, nSnap = snapshotN()) {
+    if (range.pending) {
+      return {
+        id: range.id,
+        role: range.role,
+        displayed: range.displayed,
+        pending: true,
+        status: "PENDING: no sourced year range; nothing computed"
+      };
+    }
+    const env = envelopeFromHistorical(range.start[0], range.start[1], range.end[0], range.end[1]);
+    const semantics = durationSemantics(env.nStart, env.nEndExclusive, nSnap);
+    const start = pointRecord(env.nStart, nSnap);
+    const endExclusive = pointRecord(env.nEndExclusive, nSnap);
+    const last = pointRecord(env.lastIncludedTick, nSnap);
+    return {
+      id: range.id,
+      theme: range.theme,
+      kind: range.kind,
+      role: range.role,
+      precision: range.precision,
+      label: range.label,
+      approx: range.approx,
+      src: range.src,
+      url: range.url,
+      note: range.note,
+      tradition: range.tradition,
+      displayed: range.displayed,
+      pending: false,
+      secondary: range.secondary,
+      proxy: range.proxy,
+      alternative: range.alternative,
+      source_years: sourceYears(range),
+      envelope: env.stamp,
+      envelope_note: envelopeNote(env, range.end[0], range.end[1]),
+      envelope_days: env.envelopeDays,
+      last_year_days: env.lastYearDays,
+      last_year_leap: env.lastYearLeap,
+      start,
+      end_exclusive: endExclusive,
+      last_included_tick: last,
+      duration_semantics: {
+        continuous_notation: semantics.continuous.notation,
+        discrete_notation: semantics.discrete.notation,
+        excluded_lower_fence_ticks: semantics.continuous.lowerExclusive,
+        continuous_upper_inclusive_ticks: semantics.continuous.upperInclusive,
+        discrete_lower_inclusive_ticks: semantics.discrete.lowerInclusive,
+        discrete_upper_inclusive_ticks: semantics.discrete.upperInclusive,
+        last_included_tick_N: semantics.lastIncludedTick,
+        elapsed_from_last_included_tick: semantics.elapsedFromLastIncludedTick,
+        fixture_closed_pair_ticks: semantics.fixtureClosedPair,
+        labelling_correction: "The received method writes a closed lower bound. This draft keeps both fence numbers and reports (D(end_exclusive), D(start)] for continuous time, and [D(end_exclusive)+1 tick, D(start)] for discrete ticks."
+      }
+    };
+  }
+  function reconcileFixtures(fixtureDoc = egypt_grain_clock_fixtures_20261109_default) {
+    const differences = [];
+    const nSnap = snapshotN();
+    if (nSnap !== 7674121468800n) differences.push({ id: "snapshot", field: "N", ours: nSnap.toString(), theirs: "7674121468800" });
+    if (ORIGIN_MS !== BigInt(fixtureDoc.constants.ORIGIN_MS)) {
+      differences.push({ id: "origin", field: "ORIGIN_MS", ours: ORIGIN_MS.toString(), theirs: String(fixtureDoc.constants.ORIGIN_MS) });
+    }
+    if (SNAPSHOT_MS !== BigInt(fixtureDoc.constants.SNAPSHOT_ms)) {
+      differences.push({ id: "snapshot", field: "ms", ours: SNAPSHOT_MS.toString(), theirs: String(fixtureDoc.constants.SNAPSHOT_ms) });
+    }
+    if (BigInt(fixtureDoc.constants.SNAPSHOT_N) !== nSnap) {
+      differences.push({ id: "snapshot", field: "fixture.SNAPSHOT_N", ours: nSnap.toString(), theirs: String(fixtureDoc.constants.SNAPSHOT_N) });
+    }
+    const snapMs = daysFromCivil(2026, 11, 9) * 86400000n + BigInt((18 * 3600 + 4 * 60) * 1e3);
+    if (snapMs !== SNAPSHOT_MS) differences.push({ id: "snapshot", field: "recomputed ms", ours: snapMs.toString(), theirs: SNAPSHOT_MS.toString() });
+    if (elapsedTicks(snapMs) !== nSnap) differences.push({ id: "snapshot", field: "ms formula", ours: elapsedTicks(snapMs).toString(), theirs: nSnap.toString() });
+    const oursById = new Map(allRanges().map((range) => [range.id, evaluateRange(range, nSnap)]));
+    const rows = [];
+    let boundaries = 0;
+    let matched = 0;
+    const invariants = [];
+    function check(name, pass, detail) {
+      invariants.push({ name, pass: Boolean(pass), detail: detail || "" });
+      if (!pass) differences.push({ id: "invariant", field: name, ours: "fail", theirs: detail || "expected pass" });
+    }
+    check("snapshot N is 7674121468800", nSnap === 7674121468800n, nSnap.toString());
+    check("origin tick is 0", ticksAt({ year: 0, month: 5, day: 1 }) === 0n);
+    check("origin ms is -62156764800000", daysFromCivil(0, 5, 1) * 86400000n === ORIGIN_MS);
+    for (const theirs of fixtureDoc.ranges) {
+      const ours = oursById.get(theirs.id);
+      if (!ours) {
+        differences.push({ id: theirs.id, field: "presence", ours: "missing", theirs: "present" });
+        continue;
+      }
+      if (theirs.status || ours.pending) {
+        const pendingOk = Boolean(ours.pending) && String(theirs.status || "").startsWith("PENDING");
+        check(`pending row ${theirs.id} has no computed envelope`, pendingOk, theirs.status || "");
+        rows.push({ id: theirs.id, role: theirs.role, status: "pending", displayed: ours.displayed, bounds: 0 });
+        continue;
+      }
+      if (ours.envelope !== theirs.envelope) {
+        differences.push({ id: theirs.id, field: "envelope", ours: ours.envelope, theirs: theirs.envelope });
+      }
+      if (!same(ours.envelope_days, theirs.envelope_days)) {
+        differences.push({ id: theirs.id, field: "envelope_days", ours: stringify(ours.envelope_days), theirs: String(theirs.envelope_days) });
+      }
+      if (ours.envelope_note !== theirs.envelope_note) {
+        differences.push({ id: theirs.id, field: "envelope_note", ours: ours.envelope_note, theirs: theirs.envelope_note });
+      }
+      if (ours.source_years !== theirs.source_years) {
+        differences.push({ id: theirs.id, field: "source_years", ours: ours.source_years, theirs: theirs.source_years });
+      }
+      const before = differences.length;
+      comparePoint(theirs.id, "start", ours.start, theirs.start, differences);
+      comparePoint(theirs.id, "end_exclusive", ours.end_exclusive, theirs.end_exclusive, differences);
+      const pair = theirs.duration_to_snapshot_range_ticks;
+      const ourPair = ours.duration_semantics.fixture_closed_pair_ticks;
+      if (!same(ourPair[0], pair[0]) || !same(ourPair[1], pair[1])) {
+        differences.push({
+          id: theirs.id,
+          field: "duration fence numbers",
+          ours: ourPair.map(stringify).join(","),
+          theirs: pair.join(",")
+        });
+      }
+      boundaries += 2;
+      if (differences.length === before && ours.envelope === theirs.envelope) matched += 2;
+      rows.push({
+        id: theirs.id,
+        role: theirs.role,
+        displayed: ours.displayed,
+        status: "computed",
+        bounds: 2,
+        numeric_fences_match: differences.length === before
+      });
+      const nStart = ours.start.tick_position_N;
+      const nEnd = ours.end_exclusive.tick_position_N;
+      const dStart = ours.start.duration_to_snapshot_ticks;
+      const dEnd = ours.end_exclusive.duration_to_snapshot_ticks;
+      const recomposed = composeEuclid({
+        cowrieIndex: ours.start.euclidean.cowrie_index,
+        grains: ours.start.euclidean.grains,
+        ticks: ours.start.euclidean.ticks
+      });
+      const absSign = ours.start.sign === 0n ? 0n : ours.start.sign;
+      check(`${theirs.id} recomposes`, recomposed === nStart && composeAbs({ sign: absSign, ...ours.start.abs_decomposition }) === nStart);
+      check(`${theirs.id} N + D = snapshot`, nStart + dStart === nSnap && nEnd + dEnd === nSnap);
+      check(`${theirs.id} remainders`, inRange(ours.start) && inRange(ours.end_exclusive));
+      check(`${theirs.id} envelope length`, (nEnd - nStart) / TICKS_PER_DAY === ours.envelope_days && (nEnd - nStart) % TICKS_PER_DAY === 0n);
+      check(`${theirs.id} monotonic`, nStart < nEnd && dStart > dEnd && dStart - dEnd === nEnd - nStart);
+      check(
+        `${theirs.id} discrete lower is fence + 1`,
+        ours.duration_semantics.discrete_lower_inclusive_ticks === dEnd + 1n && ours.duration_semantics.elapsed_from_last_included_tick === dEnd + 1n && ours.duration_semantics.discrete_lower_inclusive_ticks <= dStart
+      );
+      check(`${theirs.id} index is N+1 and is not the decomposed offset`, ours.start.tick_index_N_plus_1 === nStart + 1n && ours.start.tick_index_N_plus_1 !== nStart);
+    }
+    for (const range of allRanges()) {
+      if (range.pending) continue;
+      const env = envelopeFromHistorical(range.start[0], range.start[1], range.end[0], range.end[1]);
+      const yearLen = daysFromCivil(env.endFenceAstronomicalYear, 1, 1) - daysFromCivil(env.lastAstronomicalYearInclusive, 1, 1);
+      const ok = yearLen === env.lastYearDays && (yearLen === 365n || yearLen === 366n);
+      check(`${range.id} included final year has its full ${yearLen} days inside the envelope`, ok, `last year ${env.lastAstronomicalYearInclusive}`);
+      const included = env.envelopeDays >= yearLen;
+      check(`${range.id} envelope is at least the final year`, included);
+    }
+    const napatan = oursById.get("napatan_period");
+    const proxy = oursById.get("kurru_proxy_napatan");
+    check(
+      "Napatan proxy carries the same counts as the Napatan period and a different role",
+      napatan && proxy && napatan.start.tick_position_N === proxy.start.tick_position_N && napatan.end_exclusive.tick_position_N === proxy.end_exclusive.tick_position_N && proxy.role === "proxy" && proxy.proxy === true
+    );
+    const met = oursById.get("khufu_reign_met");
+    const mota = oursById.get("khufu_reign_mota");
+    check("Met and MoTA Khufu counts are both kept and differ", met.start.tick_position_N !== mota.start.tick_position_N);
+    const unesco = oursById.get("meroitic_period");
+    const bm = oursById.get("meroitic_period_bm");
+    check("UNESCO and British Museum Meroitic starts differ", unesco.start.tick_position_N !== bm.start.tick_position_N && unesco.end_exclusive.tick_position_N === bm.end_exclusive.tick_position_N);
+    const nuri = oursById.get("nuri_pyramid_use_secondary");
+    check("secondary Nuri row is computed and withheld from display", nuri && nuri.displayed === false && nuri.secondary === true && nuri.start.tick_position_N < 0n);
+    check("El-Kurru royal burials stay pending", oursById.get("kurru_royal_burials").pending === true);
+    const failedInvariants = invariants.filter((item) => !item.pass);
+    const numericDifferences = differences.filter((item) => item.field !== "invariant");
+    return {
+      snapshot_N: nSnap.toString(),
+      snapshot_match: nSnap === 7674121468800n,
+      origin_ms: ORIGIN_MS.toString(),
+      boundary_rows: boundaries,
+      boundaries_matched: matched,
+      boundaries_differed: boundaries - matched,
+      pending: ["kurru_royal_burials"],
+      withheld_from_display: ["nuri_pyramid_use_secondary"],
+      duration_semantics: {
+        fixture_writes: "[D(end_exclusive), D(start)]",
+        corrected_continuous: "(D(end_exclusive), D(start)]",
+        corrected_discrete: "[D(end_exclusive) + 1 tick, D(start)]",
+        numeric_excluded_boundary_comparisons_match: numericDifferences.every((item) => item.field !== "duration fence numbers"),
+        note: "METHOD.md writes a closed lower bound. The fence numbers match the fixtures. The attained duration does not include D(end_exclusive)."
+      },
+      rows,
+      differences: numericDifferences,
+      invariants,
+      invariants_passed: invariants.filter((item) => item.pass).length,
+      invariants_failed: failedInvariants.length,
+      ranges: allRanges().map((range) => serializeRange(oursById.get(range.id)))
+    };
+  }
+  function inRange(point) {
+    const e = point.euclidean;
+    const a = point.abs_decomposition;
+    return e.grains >= 0n && e.grains < 30000n && e.ticks >= 0n && e.ticks < 120n && a.grains >= 0n && a.grains < 30000n && a.ticks >= 0n && a.ticks < 120n && a.cowries >= 0n;
+  }
+  function serializeRange(range) {
+    return JSON.parse(JSON.stringify(range, (_, value) => typeof value === "bigint" ? value.toString() : value));
+  }
+
+  // src/v2/icons.mjs
+  function sandGrain(className = "icon-sand") {
+    return `<svg class="${className}" viewBox="0 0 64 64" aria-hidden="true">
+    <path fill="#e4c27a" d="M32 4c1.2 9 8 16 12 26 3.2 8 2 20-4.5 26.5C33 62 22 58 18 48 12 34 18 18 32 4z"/>
+    <path fill="#f6e7c1" d="M30 14c4 8 7 14 6 24 2 2 6 1 8-2-4-10-8-18-14-22z"/>
+    <path fill="none" stroke="#8a6230" stroke-width="1.4" d="M32 4c1.2 9 8 16 12 26 3.2 8 2 20-4.5 26.5C33 62 22 58 18 48 12 34 18 18 32 4z"/>
+  </svg>`;
+  }
+  function riceGrain(className = "icon-rice") {
+    return `<svg class="${className}" viewBox="0 0 64 64" aria-hidden="true">
+    <path fill="#fbf7ef" stroke="#b7aa90" stroke-width="1.6" d="M18 40c2-16 10-28 22-32 6 10 10 24 6 38-6 8-16 10-24 4-4-2-6-6-4-10z"/>
+    <path fill="none" stroke="#d9cbb0" stroke-width="1.2" d="M24 38c6-12 12-20 18-26"/>
+  </svg>`;
+  }
+  function cowrieShell(className = "icon-shell") {
+    return `<svg class="${className}" viewBox="0 0 64 64" aria-hidden="true">
+    <path fill="#f4efe6" stroke="#5c4638" stroke-width="1.6" d="M32 6c12 0 20 10 20 24 0 16-8 28-20 28S12 46 12 30C12 16 20 6 32 6z"/>
+    <path fill="#6a5344" d="M32 16c5 3 8 8 8 14s-3 12-8 16c-5-4-8-10-8-16s3-11 8-14z"/>
+    <path fill="#f4efe6" d="M29 24h2v3h-2zm4 1h2v3h-2zm-6 5h2v3h-2zm8 0h2v3h-2zm-6 5h2v3h-2zm4 1h2v3h-2z"/>
+  </svg>`;
+  }
+
+  // src/v2/value.mjs
+  var QUANTUM_PER_DOLLAR = 10000000n;
+  var QUANTUM_PER_CENT = 100000n;
+  var CAPTION = "If time was money.";
+  var ILLUSTRATIVE_LABEL = "Illustrative value—not an account balance or payout";
+  function valueQuanta(ticks) {
+    return BigInt(ticks);
+  }
+  function formatExactUsd(ticks) {
+    const n = BigInt(ticks);
+    const neg = n < 0n;
+    const mag = neg ? -n : n;
+    const dollars = mag / QUANTUM_PER_DOLLAR;
+    const frac = (mag % QUANTUM_PER_DOLLAR).toString().padStart(7, "0");
+    const body = `$${formatGrouped(dollars)}.${frac}`;
+    return neg ? `−${body}` : body;
+  }
+  function roundHalfAway(numerator, divisor) {
+    const n = BigInt(numerator);
+    const d = BigInt(divisor);
+    if (d <= 0n) throw new Error("divisor must be positive");
+    const neg = n < 0n;
+    const mag = neg ? -n : n;
+    let q = mag / d;
+    const r = mag % d;
+    if (r * 2n >= d) q += 1n;
+    return neg ? -q : q;
+  }
+  function roundedCents(ticks) {
+    return roundHalfAway(ticks, QUANTUM_PER_CENT);
+  }
+  function formatRoundedCents(ticks) {
+    const cents = roundedCents(ticks);
+    const neg = cents < 0n;
+    const mag = neg ? -cents : cents;
+    const dollars = mag / 100n;
+    const frac = (mag % 100n).toString().padStart(2, "0");
+    const body = `$${formatGrouped(dollars)}.${frac}`;
+    return neg ? `−${body}` : body;
+  }
+  function formatCowrieTotal(ticks) {
+    const n = BigInt(ticks);
+    const neg = n < 0n;
+    const mag = neg ? -n : n;
+    const whole = mag / COWRIE;
+    const rem = mag % COWRIE;
+    const sign = neg ? "−" : "";
+    if (rem === 0n) return `${sign}${formatGrouped(whole)}`;
+    const part = fraction(rem, COWRIE);
+    return `${sign}${formatGrouped(whole)} + ${part.text}`;
+  }
+  function valueRange(semantics) {
+    const endFence = BigInt(semantics.excluded_lower_fence_ticks ?? semantics.continuous.lowerExclusive);
+    const upper = BigInt(semantics.discrete_upper_inclusive_ticks ?? semantics.continuous.upperInclusive);
+    const lowerTick = BigInt(semantics.discrete_lower_inclusive_ticks ?? semantics.discrete.lowerInclusive);
+    return {
+      continuousNotation: "(V(end_exclusive), V(start)]",
+      discreteNotation: "[V(end_exclusive) + 1 tick, V(start)]",
+      lowerExclusiveTicks: endFence,
+      upperInclusiveTicks: upper,
+      discreteLowerTicks: lowerTick,
+      lowerExclusiveUsd: formatExactUsd(endFence),
+      upperInclusiveUsd: formatExactUsd(upper),
+      discreteLowerUsd: formatExactUsd(lowerTick),
+      identity: lowerTick === endFence + 1n
+    };
+  }
+
+  // src/v2/ui.mjs
+  function esc(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]);
+  }
+  function mount(doc) {
+    const state = { mode: "absolute", target: "snapshot", presetId: "dynasty4" };
+    const hash = new URLSearchParams((doc.location.hash || "").replace(/^#/, ""));
+    if (hash.get("mode") === "elapsed") state.mode = "elapsed";
+    if (["snapshot", "start", "last", "fence"].includes(hash.get("target"))) state.target = hash.get("target");
+    if (hash.get("preset") && rangeById(hash.get("preset"))) state.presetId = hash.get("preset");
+    const report = reconcileFixtures();
+    doc.body.innerHTML = shell(report);
+    const preset = doc.getElementById("preset");
+    const groups = [
+      ["Ancient Egypt", (range) => range.tradition === "egypt" && !range.pending],
+      ["Kush · Nubia", (range) => range.tradition === "kush" && !range.pending],
+      ["Pending, no epoch", (range) => range.pending]
+    ];
+    preset.innerHTML = groups.map(([label, pred]) => {
+      const options = displayedRanges().filter(pred).map((range) => {
+        const years = range.pending ? "pending" : `${range.approx ? `${range.approx} ` : ""}${range.start[0]} ${range.start[1]} – ${range.end[0]} ${range.end[1]}`;
+        return `<option value="${esc(range.id)}">${esc(range.label)} · ${esc(years)}</option>`;
+      }).join("");
+      return `<optgroup label="${esc(label)}">${options}</optgroup>`;
+    }).join("");
+    const sync = () => {
+      state.mode = doc.getElementById("mode").value;
+      state.target = doc.getElementById("target").value;
+      state.presetId = doc.getElementById("preset").value;
+      if (state.mode === "elapsed" && state.target === "snapshot") state.target = "start";
+      doc.getElementById("target").value = state.target;
+      doc.defaultView.history.replaceState(null, "", `#mode=${state.mode}&target=${state.target}&preset=${state.presetId}`);
+      render();
+    };
+    doc.getElementById("mode").addEventListener("change", sync);
+    doc.getElementById("target").addEventListener("change", sync);
+    doc.getElementById("preset").addEventListener("change", sync);
+    doc.getElementById("mode").value = state.mode;
+    doc.getElementById("target").value = state.target;
+    doc.getElementById("preset").value = state.presetId;
+    function render() {
+      const nSnap = snapshotN();
+      const range = rangeById(state.presetId);
+      const evaluated = range ? evaluateRange(range, nSnap) : null;
+      const reading = selectReading({
+        mode: state.mode,
+        target: state.target,
+        evaluated: evaluated && !evaluated.pending ? evaluated : null,
+        snapshotN: nSnap
+      });
+      const tradition = range?.tradition === "kush" ? "kush" : "egypt";
+      const shown = reading.ok ? reading.n : 0n;
+      doc.getElementById("dial").innerHTML = dialSvg(reading.ok ? ringPosition(shown) : 0);
+      const badge = doc.getElementById("badge");
+      const hub = doc.getElementById("hubN");
+      if (!reading.ok) {
+        badge.className = "badge fence";
+        badge.textContent = "No count";
+        hub.textContent = "—";
+      } else if (reading.mode === "elapsed") {
+        badge.className = reading.attained ? "badge elapsed" : "badge fence";
+        badge.textContent = reading.attained ? "Elapsed" : "Fence";
+        hub.textContent = formatGrouped(shown);
+      } else {
+        const marker = markerFor(shown);
+        badge.className = `badge ${marker.code}`;
+        badge.textContent = marker.code === "before" ? "Before epoch" : marker.code === "after" ? "After epoch" : "At epoch";
+        hub.textContent = formatGrouped(shown);
+      }
+      doc.getElementById("reading").innerHTML = readingHtml(reading, nSnap);
+      doc.getElementById("period").innerHTML = periodHtml(range, evaluated);
+      doc.getElementById("dial").dataset.tradition = tradition;
+    }
+    render();
+    const win = doc.defaultView;
+    if (win) {
+      win.OMM_TIME = {
+        version: "2.1",
+        creator: "Logan Madison Jones",
+        ORIGIN_UTC,
+        ORIGIN_UNIX_SECONDS: (ORIGIN_MS / 1000n).toString(),
+        ORIGIN_MS: ORIGIN_MS.toString(),
+        ticks_per_second: TPS.toString(),
+        grain_ticks: GRAIN.toString(),
+        cowrie_ticks: COWRIE.toString(),
+        elapsedTicks(ms) { return elapsedTicks(ms).toString(); },
+        ticksAt(parts) { return ticksAt(parts).toString(); },
+        decomposeEuclid(n) {
+          const d = decomposeEuclid(n);
+          return { cowrieIndex: d.cowrieIndex.toString(), grains: d.grains.toString(), ticks: d.ticks.toString() };
+        },
+        snapshotN() { return snapshotN().toString(); }
+      };
+    }
+    const liveNode = doc.getElementById("omm-now");
+    if (liveNode && win) {
+      const tickLive = () => {
+        const ms = Date.now();
+        const n = elapsedTicks(ms);
+        const euc = decomposeEuclid(n);
+        const iso = new Date(ms).toISOString();
+        liveNode.textContent = `${formatGrouped(n)} ticks  ·  ${formatGrouped(euc.cowrieIndex)} cowries + ${formatGrouped(euc.grains)} grains + ${euc.ticks} ticks  ·  ${iso}`;
+        liveNode.dataset.n = n.toString();
+        liveNode.dataset.ms = String(ms);
+        liveNode.dataset.utc = iso;
+      };
+      tickLive();
+      const reduce = win.matchMedia && win.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      win.setInterval(tickLive, reduce ? 1000 : 100);
+    }
+    if (new URLSearchParams(doc.location.search).get("selftest") === "1") {
+      const problems = [];
+      const text = doc.body.innerText;
+      if (!text.includes(CAPTION)) problems.push("caption");
+      if (!text.includes(ILLUSTRATIVE_LABEL)) problems.push("label");
+      if (!text.includes("$0.36")) problems.push("cowrie price");
+      if (!text.includes("$767,412.1468800")) problems.push("snapshot exact");
+      if (text.includes("1468801")) problems.push("index was priced");
+      if (!text.includes("7,674,121,468,800")) problems.push("snapshot N");
+      if (doc.body.innerText.includes("670 BCE")) problems.push("nuri years");
+      const node = doc.createElement("pre");
+      node.id = "selftest";
+      node.textContent = problems.length ? `FAIL ${problems.join(", ")}` : "PASS";
+      doc.body.appendChild(node);
+    }
+  }
+  function readingHtml(reading, nSnap) {
+    if (!reading.ok) return `<h2>No count for this selection</h2><p>${esc(reading.message)}</p>`;
+    const quanta = valueQuanta(reading.n);
+    const indexLine = reading.showIndex ? `<dt>Display index N+1</dt><dd class="mono">${esc(formatGrouped(reading.index))} · not converted to money</dd>` : `<dt>Display index</dt><dd>Not used for an elapsed duration, and not converted.</dd>`;
+    const kind = reading.mode === "elapsed" ? "Positive elapsed value, from the selected bound to the snapshot. This is not the signed date offset." : "Signed timeline offset from the provisional epoch. A minus is the whole amount, before the epoch.";
+    const fence = reading.mode === "elapsed" && !reading.attained ? `<p class="callout">This fence is excluded. Its illustrative value is not an attained amount.</p>` : "";
+    return `<p class="kicker">${reading.mode === "elapsed" ? "Elapsed from the selected period" : "Signed timeline offset"}</p>
+    <h2>${esc(reading.marker || markerFor(reading.n).text)}</h2>
+    <p>${esc(kind)}</p>
+    <dl>
+      <dt>Ticks used for value</dt><dd class="mono">${esc(formatGrouped(reading.n))}</dd>
+      ${indexLine}
+      <dt>Time bundle</dt><dd class="mono">${esc(absMixed(reading.n))}</dd>
+      <dt>All cowries, with fraction</dt><dd class="mono">${esc(formatCowrieTotal(reading.n))}</dd>
+      <dt>Exact illustrative value</dt><dd class="mono exact">${esc(formatExactUsd(quanta))}</dd>
+      <dt>Rounded to the cent</dt><dd class="mono">${esc(formatRoundedCents(quanta))} · half away from zero, not the exact amount</dd>
+      <dt>Quanta check</dt><dd class="mono">${esc(quanta.toString())} = ticks converted, not the display index</dd>
+    </dl>
+    ${fence}
+    <p class="quiet">Snapshot N ${esc(formatGrouped(nSnap))} remains ${esc(formatExactUsd(nSnap))} exact.</p>`;
+  }
+  function periodHtml(range, evaluated) {
+    if (!range) return "";
+    if (range.pending || evaluated?.pending) {
+      return `<p class="kicker">Kush · Nubia</p><h2>${esc(range.label)}</h2>
+      <p class="chip">Pending · no precise cemetery epoch</p>
+      <p>IKAP records the absolute dating of El-Kurru as debated. No envelope and no illustrative value are computed. The Napatan span is a broad proxy, not this cemetery’s start.</p>`;
+    }
+    const sem = evaluated.duration_semantics;
+    const values = valueRange(sem);
+    const tradition = range.tradition === "kush" ? "Kush · Nubia" : "Ancient Egypt";
+    return `<p class="kicker">${esc(tradition)}</p><h2>${esc(range.label)}</h2>
+    <p>${esc(evaluated.source_years)}</p>
+    <p><span class="chip">${esc(range.precision)}</span><span class="chip">${esc(range.role)}</span>
+      ${range.proxy ? `<span class="chip">Proxy · not an El-Kurru epoch</span>` : ""}
+      ${range.alternative ? `<span class="chip">Alternative chronology · not merged</span>` : ""}</p>
+    ${range.note ? `<p>${esc(range.note)}</p>` : ""}
+    <div class="callout ${range.tradition === "kush" ? "kush" : ""}">
+      <strong>Year-boundary convention.</strong> Half-open envelope ${esc(evaluated.envelope)}. The full last source year is included. Both January 1 instants are a modern calculation convention.
+    </div>
+    <p><strong>Chronology.</strong> ${esc(range.precision)}. The arithmetic, and the illustrative value mapped from it, do not make a circa or a terminus exact.</p>
+    <p>Elapsed ticks (${esc(formatGrouped(values.lowerExclusiveTicks))}, ${esc(formatGrouped(values.upperInclusiveTicks))}].</p>
+    <p>Discrete ticks [${esc(formatGrouped(values.discreteLowerTicks))}, ${esc(formatGrouped(values.upperInclusiveTicks))}].</p>
+    <p>Illustrative value, same brackets: (${esc(values.lowerExclusiveUsd)}, ${esc(values.upperInclusiveUsd)}].</p>
+    <p>Discrete value: [${esc(values.discreteLowerUsd)}, ${esc(values.upperInclusiveUsd)}].</p>
+    <div class="table-scroll"><table>
+      <caption>Bounds for ${esc(range.label)}. Value uses the bound’s tick count, not N+1.</caption>
+      <thead><tr><th>Bound</th><th>Absolute N</th><th>Signed value</th><th>Elapsed ticks</th><th>Elapsed value</th></tr></thead>
+      <tbody>
+        ${boundRow("Included start", evaluated.start)}
+        ${boundRow("Last included tick", evaluated.last_included_tick)}
+        ${boundRow("Excluded end fence", evaluated.end_exclusive)}
+      </tbody>
+    </table></div>`;
+  }
+  function boundRow(name, point) {
+    const n = BigInt(point.tick_position_N);
+    const d = BigInt(point.duration_to_snapshot_ticks);
+    return `<tr><th scope="row">${esc(name)}</th><td class="mono">${esc(formatGrouped(n))}</td><td class="mono">${esc(formatExactUsd(n))}</td><td class="mono">${esc(formatGrouped(d))}</td><td class="mono">${esc(formatExactUsd(d))}</td></tr>`;
+  }
+  function dialSvg(position) {
+    const marks = [];
+    for (let i = 0; i < 120; i += 1) {
+      const angle2 = -Math.PI / 2 + 2 * Math.PI * i / 120;
+      const inner = i % 10 === 0 ? 108 : 114;
+      const x1 = 160 + Math.cos(angle2) * inner;
+      const y1 = 160 + Math.sin(angle2) * inner;
+      const x2 = 160 + Math.cos(angle2) * 126;
+      const y2 = 160 + Math.sin(angle2) * 126;
+      marks.push(`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${i === position ? "#c9923a" : "#d9cdb8"}" stroke-width="${i === position ? 3 : 1}"/>`);
+    }
+    const angle = -Math.PI / 2 + 2 * Math.PI * position / 120;
+    const x = 160 + Math.cos(angle) * 96;
+    const y = 160 + Math.sin(angle) * 96;
+    return `<svg class="dial" viewBox="0 0 320 320" role="img" aria-label="One sand grain marks the tick inside the current second. The marks are a scale, not a count of grains.">
+    <circle cx="160" cy="160" r="132" fill="#fffaf3" stroke="#e6dcc8"/>
+    ${marks.join("")}
+    <g transform="translate(${(x - 16).toFixed(1)} ${(y - 16).toFixed(1)}) scale(0.5)">${sandGrain().replace("<svg", "<g").replace("</svg>", "</g>")}</g>
+  </svg>`;
+  }
+  function shell(report) {
+    const snap = snapshotN();
+    const point = pointRecord(snap, snap);
+    const cairo = gizaMidnightCheck(snap);
+    return `<a class="skip" href="#reading">Skip to the reading</a>
+  <div class="wrap">
+    <p class="banner"><strong>COWRI3 CLOCK · OMM TIME · v2.1</strong><span>OUR MOTHER MARYAM (OMM) unified date/time standard · TIME = MONEY</span></p>
+    <p class="kicker">Version 2.1 · epoch ${esc(ORIGIN_UTC)} · ${esc(ORIGIN_MS.toString())} ms</p>
+    <h1>OMM grain clock</h1>
+    <p class="caption" id="caption">${esc(CAPTION)}</p>
+    <section class="credit" id="credit">
+      <p class="brand">TIME = MONEY · COWRI3</p>
+      <h2>COWRI3 CLOCK · OMM TIME created by Logan Madison Jones</h2>
+      <p>Date first published: 13 November 2026, 00:00 EST (05:00 UTC)</p>
+      <p>Spec: 120 ticks per second, counted from 1 May, astronomical year 0, 00:00 UTC. One grain = 120 ticks. One cowrie = 3,600,000 ticks.</p>
+      <p>Machine-readable time file: <a href="omm-time.json">omm-time.json</a>. A static file cannot tick on its own; <a href="omm-now.js">omm-now.js</a> shows how a reader computes live values from the Unix timestamp.</p>
+      <p class="quiet">Historical calendar layers on this page are research readings, not official religious or church doctrine.</p>
+      <p>© 2026 Logan Madison Jones. All rights reserved.</p>
+      <p class="statement" id="omm-statement">OUR MOTHER MARYAM (OMM) is a UNIFIED DATE/TIME STANDARD.</p>
+      <p id="omm-x">Follow on X: <a href="https://x.com/OurMotherMaryam" rel="noopener noreferrer">x.com/OurMotherMaryam</a></p>
+      <div class="live-now">
+        <p class="kicker">Live OMM time on this device</p>
+        <p id="omm-now" class="mono hub-n">…</p>
+      </div>
+    </section>
+    <p class="quiet">Egypt and Nubia, same anchors as v1. Sand tick, rice grain, cowrie shell. The drawing of one unit is not the quantity.</p>
+    <div class="units" aria-label="Unit mapping">
+      <article class="unit"><div>${sandGrain()}</div><div><strong>Sand tick</strong><span class="quiet">120 sand ticks = 1 rice grain</span><div class="price">$0.0000001</div></div></article>
+      <article class="unit"><div>${riceGrain()}</div><div><strong>Rice grain</strong><span class="quiet">30,000 rice grains = 1 cowrie</span><div class="price">$0.000012</div></div></article>
+      <article class="unit"><div>${cowrieShell()}</div><div><strong>Cowrie shell</strong><span class="quiet">3,600,000 sand ticks</span><div class="price" id="cowriePrice">$0.36</div></div></article>
+    </div>
+    <p class="note" id="illustrative">${esc(ILLUSTRATIVE_LABEL)}</p>
+    <div class="hero">
+      <div class="panel" style="margin-top:0">
+        <div class="dial-wrap"><div id="dial"></div><div class="hub"><p id="badge" class="badge after">After epoch</p><p id="hubN" class="hub-n">0</p><p class="quiet">ticks</p></div></div>
+      </div>
+      <div class="panel" id="reading" style="margin-top:0" aria-live="polite"></div>
+    </div>
+    <section class="panel"><div class="row">
+      <label>Mode<select id="mode"><option value="absolute">Signed offset from the epoch</option><option value="elapsed">Elapsed to the snapshot</option></select></label>
+      <label>Bound<select id="target"><option value="snapshot">Fixed snapshot</option><option value="start">Included start</option><option value="last">Last included tick</option><option value="fence">Excluded end fence</option></select></label>
+      <label>Ancient selection<select id="preset"></select></label>
+    </div></section>
+    <section class="panel">
+      <p class="kicker">Fixed snapshot · v1 numbers unchanged</p>
+      <h2>9 Nov 2026, 1:04 PM EST</h2>
+      <dl>
+        <dt>Instant</dt><dd class="mono">${esc(SNAPSHOT_UTC)}</dd>
+        <dt>Label</dt><dd>${esc(SNAPSHOT_LABEL)} · 8:04 PM EET at Giza</dd>
+        <dt>N</dt><dd class="mono">${esc(formatGrouped(snap))}</dd>
+        <dt>Display index</dt><dd class="mono">${esc(formatGrouped(snap + 1n))} · not priced</dd>
+        <dt>All cowries</dt><dd class="mono">${esc(formatCowrieTotal(snap))} · nested ${esc(point.abs_mixed)}</dd>
+        <dt>Exact value</dt><dd class="mono exact">${esc(formatExactUsd(snap))}</dd>
+        <dt>Rounded cents</dt><dd class="mono">${esc(formatRoundedCents(snap))}</dd>
+        <dt>Cairo check</dt><dd class="mono">${esc(formatGrouped(cairo.deltaTicks))} ticks · ${esc(formatExactUsd(cairo.deltaTicks))}</dd>
+      </dl>
+      <p class="quiet">Reconciliation still ${esc(report.boundaries_matched)} / ${esc(report.boundary_rows)} bounds, ${esc(report.invariants_passed)} invariants. ${esc(WITHHELD_NOTE)}</p>
+    </section>
+    <section class="panel" id="period"></section>
+    <p class="quiet">Uniform 86,400-second days. No leap seconds. No Egyptian civil date for today. El-Kurru has no epoch. A reign is not a construction date. Cents round half away from zero; the 7-decimal figure is exact for every whole tick.</p>
+    <p class="page-foot">COWRI3 CLOCK · OMM TIME created by Logan Madison Jones. First published 13 November 2026, 00:00 EST. © 2026 Logan Madison Jones. All rights reserved.</p>
+  </div>`;
+  }
+
+  // src/v2/main.mjs
+  mount(document);
+})();
+
+</script>
+</body>
+</html>

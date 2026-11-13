@@ -1,0 +1,68 @@
+{
+  "name": "COWRI3 CLOCK · OMM TIME",
+  "branding": {
+    "TIME_EQUALS_MONEY": "TIME = MONEY",
+    "system": "COWRI3"
+  },
+  "version": "2.1",
+  "status": "published",
+  "creator": "Logan Madison Jones",
+  "copyright": "© 2026 Logan Madison Jones. All rights reserved.",
+  "date_first_published": "2026-11-13T05:00:00Z (13 November 2026, 00:00 EST)",
+  "statement": "OUR MOTHER MARYAM (OMM) is a UNIFIED DATE/TIME STANDARD.",
+  "x": "https://x.com/OurMotherMaryam",
+  "note": "A static file cannot tick on its own. Readers should compute live values with the rule below, or with omm-now.js. Historical calendar layers packaged with the clock page are research readings, not official religious or church doctrine. The epoch is marked provisional in the source v2 clock.",
+  "epoch": {
+    "utc": "0000-05-01T00:00:00Z",
+    "description": "1 May, astronomical year 0 (equal to 1 BCE), 00:00 UTC, proleptic Gregorian calendar. Python's datetime cannot represent year 0; the same instant is 245 days before 0001-01-01T00:00:00Z.",
+    "calendar": "proleptic Gregorian",
+    "year_numbering": "astronomical (year 0 = 1 BCE; n BCE = 1 − n)",
+    "unix_seconds": -62156764800,
+    "unix_milliseconds": -62156764800000,
+    "unix_days": -719407,
+    "leap_seconds": "none; every day is 86,400 SI-scale seconds as in Unix time",
+    "status": "provisional, as marked in the source v2 grain clock"
+  },
+  "units": {
+    "ticks_per_second": 120,
+    "grain_ticks": 120,
+    "cowrie_ticks": 3600000,
+    "cowrie_grains": 30000,
+    "ticks_per_day": 10368000
+  },
+  "computation": {
+    "rule": "N = floor((unix_milliseconds - origin_unix_milliseconds) * 120 / 1000). Equivalently, at a whole Unix second, N = (unix_seconds - origin_unix_seconds) * 120.",
+    "origin_unix_seconds": -62156764800,
+    "origin_unix_milliseconds": -62156764800000,
+    "integer_arithmetic": "Use integer (or BigInt) math. Do not multiply the millisecond offset by 120 in IEEE-754 binary64 if the product would exceed 2^53 − 1 (that overflow is still in the future, around year 2379).",
+    "euclidean_decomposition": "N = cowrie_index * 3,600,000 + grains * 120 + ticks, with cowrie_index = floor(N / 3,600,000), 0 ≤ grains < 30,000, and 0 ≤ ticks < 120.",
+    "sign": "N is 0 at the epoch, positive after it, and negative before it.",
+    "live_helper": "omm-now.js"
+  },
+  "verified_snapshot": {
+    "utc": "2026-11-09T18:04:00.000Z",
+    "unix_milliseconds": 1794247440000,
+    "tick_position_N": 7674121468800,
+    "tick_position_N_string": "7674121468800",
+    "euclidean": {
+      "cowrie_index": 2131700,
+      "grains": 12240,
+      "ticks": 0
+    },
+    "note": "Fixed snapshot used by the v2 grain clock (Mon 9 Nov 2026, 18:04 UTC / 1:04 PM EST). The page's engine and this file agree on this value."
+  },
+  "example_current": {
+    "utc": "2026-11-12T19:40:00.000Z",
+    "unix_milliseconds": 1794512400000,
+    "unix_seconds": 1794512400,
+    "tick_position_N": 7674153264000,
+    "tick_position_N_string": "7674153264000",
+    "euclidean": {
+      "cowrie_index": 2131709,
+      "grains": 7200,
+      "ticks": 0
+    },
+    "note": "Worked example at a chosen instant, not a live feed. Recompute from the clock's time for a live reading."
+  },
+  "url": "https://stem-star-sport.github.io/OMM-TIME/"
+}
